@@ -81,7 +81,7 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, addToCa
                                 imageUrl={product.imageUrl}
                                 name={product.name}
                                 price={product.price}
-                                description={product.description}
+                                description={product.shortDescription}
                                 tag={product.tag}
                                 quantity={product.quantity}
                                 addToCart={() => {
@@ -114,7 +114,7 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, addToCa
                                     imageUrl={product.imageUrl}
                                     name={product.name}
                                     price={product.price}
-                                    description={product.description}
+                                    description={product.shortDescription}
                                     tag={product.tag}
                                     quantity={product.quantity}
                                     addToCart={() => {

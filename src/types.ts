@@ -7,23 +7,30 @@ export interface HeaderImages {
 export interface Category {
   id: string;
   name: string;
-  description?: string;
   subcategories: ProductTypes[];
 }
 
 export interface ProductTypes {
   id: string;
   name: string;
-  description?: string;
   products: Product[];
 }
 
 export interface Product {
   id: string;
   name: string;
-  description?: string;
+  shortDescription?: string;
   price: number;
-  imageUrl: string;
+  imageUrl: string[];
+  productDetails?: {
+    description?: string,
+    bladeLength?: string,
+    bladeMaterial?: string,
+    handleLength?: string,
+    handleMaterial?: string,
+    totalLength?: string,
+
+  }
   quantity: number;
   tag?: string[];
   comments?: ProductComment[];
@@ -42,7 +49,7 @@ export interface CartItem {
   price: number;
   quantity: number;
   imageUrl: string;
-  total: number; // quantity * price
+  total: number;
 }
 
 export interface Cart {

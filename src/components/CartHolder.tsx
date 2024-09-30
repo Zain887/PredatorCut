@@ -25,7 +25,7 @@ const CartHolder: React.FC<Props> = ({ cart, removeFromCart }) => {
                                 <p className="text-gray-500">Quantity: {item.quantity}</p>
                             </div>
                             <div className="flex items-center">
-                                <img src={item.imageUrl} alt={item.name} className="w-16 h-16 object-cover rounded mr-4" />
+                                <img src={item.imageUrl[0]} alt={item.name} className="w-16 h-16 object-cover rounded mr-4" />
                                 <button
                                     onClick={() => removeFromCart(item.id)}
                                     className="bg-red-500 text-white font-bold py-1 px-3 rounded hover:bg-red-600"

@@ -7,19 +7,22 @@ interface Props {
   name: string;
   description?: string;
   price: number;
-  imageUrl: string;
+  imageUrl: string[];
   quantity: number;
   tag?: string[];
   addToCart: () => void; // AddToCart function as prop
 }
 
-const Product: React.FC<Props> = ({ id, name, description = "No description available", price, imageUrl, quantity, tag = [], addToCart }) => {
+const Product: React.FC<Props> = ({ id, name, description = "No description available", price, imageUrl = [], quantity, tag = [], addToCart }) => {
+
+  const displayedImageUrl = imageUrl.length > 0 ? imageUrl[0] : '/ImgPlaceholder.webp'; // Replace with actual placeholder path
+  
   return (
     <div className="p-4 border rounded-lg shadow-md">
       {/* Link to Product Details */}
-      <Link to={`/product/${id}`} className="block">
+      <Link to={`/product/${id}`} className="block text-white">
         {/* Product Image */}
-        <img src={imageUrl} alt={name} className="w-full h-48 object-cover rounded-md mb-4" />
+        <img src={displayedImageUrl} alt={name} className="w-full h-48 object-cover rounded-md mb-4" />
 
         {/* Product Name and Description */}
         <h2 className="text-2xl font-bold mb-2">{name}</h2>
