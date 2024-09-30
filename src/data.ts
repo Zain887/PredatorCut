@@ -33,17 +33,59 @@ export const categories: Category[] = [
                         comments: [
                             {
                                 id: uuidv4(),
-                                userName: 'Emily Johnson',
-                                commentText: 'Amazing quality sword! Very sharp and durable.',
+                                user: 'Emily Johnson',
+                                comment: 'Amazing quality sword! Very sharp and durable.',
                                 rating: 5,
-                                date: new Date(2024, 1, 22),
+
                             },
                             {
                                 id: uuidv4(),
-                                userName: 'John Doe',
-                                commentText: 'Great for battles!',
+                                user: 'John Doe',
+                                comment: 'Great for battles!',
                                 rating: 4,
-                                date: new Date(2024, 2, 10),
+
+                            },
+                            {
+                                id: uuidv4(),
+                                user: 'Emily Johnson',
+                                comment: 'Amazing quality sword! Very sharp and durable.',
+                                rating: 5,
+
+                            },
+                            {
+                                id: uuidv4(),
+                                user: 'John Doe',
+                                comment: 'Great for battles!',
+                                rating: 4,
+
+                            },
+                            {
+                                id: uuidv4(),
+                                user: 'Emily Johnson',
+                                comment: 'Amazing quality sword! Very sharp and durable.',
+                                rating: 5,
+
+                            },
+                            {
+                                id: uuidv4(),
+                                user: 'John Doe',
+                                comment: 'Great for battles!',
+                                rating: 4,
+
+                            },
+                            {
+                                id: uuidv4(),
+                                user: 'Emily Johnson',
+                                comment: 'Amazing quality sword! Very sharp and durable.',
+                                rating: 5,
+
+                            },
+                            {
+                                id: uuidv4(),
+                                user: 'John Doe',
+                                comment: 'Great for battles!',
+                                rating: 4,
+
                             }
                         ]
                     },
@@ -75,17 +117,17 @@ export const categories: Category[] = [
                         comments: [
                             {
                                 id: uuidv4(),
-                                userName: 'Emily Johnson',
-                                commentText: 'Amazing quality sword! Very sharp and durable.',
+                                user: 'Emily Johnson',
+                                comment: 'Amazing quality sword! Very sharp and durable.',
                                 rating: 5,
-                                date: new Date(2024, 1, 22),
+
                             },
                             {
                                 id: uuidv4(),
-                                userName: 'John Doe',
-                                commentText: 'Great for battles!',
+                                user: 'John Doe',
+                                comment: 'Great for battles!',
                                 rating: 4,
-                                date: new Date(2024, 2, 10),
+
                             }
                         ]
                     },
@@ -117,17 +159,17 @@ export const categories: Category[] = [
                         comments: [
                             {
                                 id: uuidv4(),
-                                userName: 'Emily Johnson',
-                                commentText: 'Amazing quality sword! Very sharp and durable.',
+                                user: 'Emily Johnson',
+                                comment: 'Amazing quality sword! Very sharp and durable.',
                                 rating: 5,
-                                date: new Date(2024, 1, 22),
+
                             },
                             {
                                 id: uuidv4(),
-                                userName: 'John Doe',
-                                commentText: 'Great for battles!',
+                                user: 'John Doe',
+                                comment: 'Great for battles!',
                                 rating: 4,
-                                date: new Date(2024, 2, 10),
+
                             }
                         ]
                     },
@@ -159,17 +201,17 @@ export const categories: Category[] = [
                         comments: [
                             {
                                 id: uuidv4(),
-                                userName: 'Emily Johnson',
-                                commentText: 'Amazing quality sword! Very sharp and durable.',
+                                user: 'Emily Johnson',
+                                comment: 'Amazing quality sword! Very sharp and durable.',
                                 rating: 5,
-                                date: new Date(2024, 1, 22),
+
                             },
                             {
                                 id: uuidv4(),
-                                userName: 'John Doe',
-                                commentText: 'Great for battles!',
+                                user: 'John Doe',
+                                comment: 'Great for battles!',
                                 rating: 4,
-                                date: new Date(2024, 2, 10),
+
                             }
                         ]
                     },
@@ -201,17 +243,17 @@ export const categories: Category[] = [
                         comments: [
                             {
                                 id: uuidv4(),
-                                userName: 'Emily Johnson',
-                                commentText: 'Amazing quality sword! Very sharp and durable.',
+                                user: 'Emily Johnson',
+                                comment: 'Amazing quality sword! Very sharp and durable.',
                                 rating: 5,
-                                date: new Date(2024, 1, 22),
+
                             },
                             {
                                 id: uuidv4(),
-                                userName: 'John Doe',
-                                commentText: 'Great for battles!',
+                                user: 'John Doe',
+                                comment: 'Great for battles!',
                                 rating: 4,
-                                date: new Date(2024, 2, 10),
+
                             }
                         ]
                     },
@@ -243,17 +285,17 @@ export const categories: Category[] = [
                         comments: [
                             {
                                 id: uuidv4(),
-                                userName: 'Emily Johnson',
-                                commentText: 'Amazing quality sword! Very sharp and durable.',
+                                user: 'Emily Johnson',
+                                comment: 'Amazing quality sword! Very sharp and durable.',
                                 rating: 5,
-                                date: new Date(2024, 1, 22),
+
                             },
                             {
                                 id: uuidv4(),
-                                userName: 'John Doe',
-                                commentText: 'Great for battles!',
+                                user: 'John Doe',
+                                comment: 'Great for battles!',
                                 rating: 4,
-                                date: new Date(2024, 2, 10),
+
                             }
                         ]
                     },
@@ -285,17 +327,17 @@ export const categories: Category[] = [
                         comments: [
                             {
                                 id: uuidv4(),
-                                userName: 'Emily Johnson',
-                                commentText: 'Amazing quality sword! Very sharp and durable.',
+                                user: 'Emily Johnson',
+                                comment: 'Amazing quality sword! Very sharp and durable.',
                                 rating: 5,
-                                date: new Date(2024, 1, 22),
+
                             },
                             {
                                 id: uuidv4(),
-                                userName: 'John Doe',
-                                commentText: 'Great for battles!',
+                                user: 'John Doe',
+                                comment: 'Great for battles!',
                                 rating: 4,
-                                date: new Date(2024, 2, 10),
+
                             }
                         ]
                     },
@@ -327,17 +369,17 @@ export const categories: Category[] = [
                         comments: [
                             {
                                 id: uuidv4(),
-                                userName: 'Emily Johnson',
-                                commentText: 'Amazing quality sword! Very sharp and durable.',
+                                user: 'Emily Johnson',
+                                comment: 'Amazing quality sword! Very sharp and durable.',
                                 rating: 5,
-                                date: new Date(2024, 1, 22),
+
                             },
                             {
                                 id: uuidv4(),
-                                userName: 'John Doe',
-                                commentText: 'Great for battles!',
+                                user: 'John Doe',
+                                comment: 'Great for battles!',
                                 rating: 4,
-                                date: new Date(2024, 2, 10),
+
                             }
                         ]
                     },
@@ -376,10 +418,10 @@ export const categories: Category[] = [
                         comments: [
                             {
                                 id: uuidv4(),
-                                userName: 'Jane Smith',
-                                commentText: 'Perfect for throwing! Balanced and strong.',
+                                user: 'Jane Smith',
+                                comment: 'Perfect for throwing! Balanced and strong.',
                                 rating: 4,
-                                date: new Date(2024, 1, 20),
+
                             }
                         ]
                     }
@@ -408,10 +450,10 @@ export const categories: Category[] = [
                         comments: [
                             {
                                 id: uuidv4(),
-                                userName: 'Emily Johnson',
-                                commentText: 'Best kitchen knife I’ve ever used!',
+                                user: 'Emily Johnson',
+                                comment: 'Best kitchen knife I’ve ever used!',
                                 rating: 5,
-                                date: new Date(2024, 1, 22),
+
                             }
                         ]
                     }
@@ -440,10 +482,10 @@ export const categories: Category[] = [
                         comments: [
                             {
                                 id: uuidv4(),
-                                userName: 'Mark Thompson',
-                                commentText: 'Perfect for my camping trips!',
+                                user: 'Mark Thompson',
+                                comment: 'Perfect for my camping trips!',
                                 rating: 5,
-                                date: new Date(2024, 2, 12),
+
                             }
                         ]
                     },
@@ -482,10 +524,9 @@ export const categories: Category[] = [
                         comments: [
                             {
                                 id: uuidv4(),
-                                userName: 'Sarah Lee',
-                                commentText: 'Great kit! Everything I need for dental care.',
+                                user: 'Sarah Lee',
+                                comment: 'Great kit! Everything I need for dental care.',
                                 rating: 5,
-                                date: new Date(2024, 2, 5),
                             }
                         ]
                     }
@@ -514,10 +555,10 @@ export const categories: Category[] = [
                         comments: [
                             {
                                 id: uuidv4(),
-                                userName: 'Jessica Brown',
-                                commentText: 'Love this roller! It feels amazing on my skin.',
+                                user: 'Jessica Brown',
+                                comment: 'Love this roller! It feels amazing on my skin.',
                                 rating: 5,
-                                date: new Date(2024, 3, 10),
+
                             }
                         ]
                     },

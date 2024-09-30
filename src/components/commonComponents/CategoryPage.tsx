@@ -6,15 +6,15 @@ import Product from './Product';
 import PopUp from '../PopUp';
 
 interface Props {
-    selectedCategory: Category;    // The selected category from the menu
-    headerImages: HeaderImages[];  // Array of header images to display dynamically
+    selectedCategory: Category; // The selected category from the menu
+    headerImages: HeaderImages[]; // Array of header images to display dynamically
+    addToCart: (product: ProductType) => void; // Ensure you have the correct signature
 }
 
-const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages }) => {
+const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, addToCart }) => {
     const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<string | null>(null);
     const [popupVisible, setPopupVisible] = useState(false); // State for the popup
     const [popupMessage, setPopupMessage] = useState('');
-
 
     // Find the matching header image for the selected category
     const matchedHeaderImage = headerImages.find(
@@ -31,24 +31,7 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages }) => {
         setSelectedSubcategoryId(subcategoryId);
     };
 
-    // Function to add a product to the cart
-    const addToCart = (product: ProductType) => {
-        const updatedCart = JSON.parse(localStorage.getItem('cart') || '[]');
-        updatedCart.push(product); // Add the product to the cart
-        localStorage.setItem('cart', JSON.stringify(updatedCart)); // Store cart in local storage
-        showPopup(`${product.name} quantity updated in cart!`);
-
-    };
-
-    // Get all products from selected category if no subcategory is selected
-    const allProducts = selectedCategory.subcategories.flatMap(subcat => subcat.products);
-    const filteredProducts = selectedSubcategoryId
-        ? selectedCategory.subcategories
-            .find(subcat => subcat.id === selectedSubcategoryId)?.products || []
-        : allProducts; // Show all products if no subcategory is selected
-    const hotSellingProducts = filteredProducts.filter(product => product.tag && product.tag.includes('Featured'));
-
-
+    // Function to show popup notification
     const showPopup = (message: string) => {
         setPopupMessage(message);
         setPopupVisible(true);
@@ -60,10 +43,14 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages }) => {
         }, 2000);
     };
 
-    const closePopup = () => {
-        setPopupVisible(false);
-        setPopupMessage('');
-    };
+    // Get all products from selected category if no subcategory is selected
+    const allProducts = selectedCategory.subcategories.flatMap(subcat => subcat.products);
+    const filteredProducts = selectedSubcategoryId
+        ? selectedCategory.subcategories
+            .find(subcat => subcat.id === selectedSubcategoryId)?.products || []
+        : allProducts; // Show all products if no subcategory is selected
+    const hotSellingProducts = filteredProducts.filter(product => product.tag && product.tag.includes('Featured'));
+
     return (
         <div>
             {/* Display Header Image */}
@@ -97,7 +84,10 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages }) => {
                                 description={product.description}
                                 tag={product.tag}
                                 quantity={product.quantity}
-                                addToCart={() => addToCart(product)} // Pass addToCart to Product
+                                addToCart={() => {
+                                    addToCart(product);
+                                    showPopup(`${product.name} quantity updated in cart!`); // Show popup message
+                                }} // Pass addToCart to Product
                             />
                         ))}
                     </div>
@@ -127,14 +117,17 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages }) => {
                                     description={product.description}
                                     tag={product.tag}
                                     quantity={product.quantity}
-                                    addToCart={() => addToCart(product)} // Pass addToCart to Product
+                                    addToCart={() => {
+                                        addToCart(product);
+                                        showPopup(`${product.name} quantity updated in cart!`); // Show popup message
+                                    }} // Pass addToCart to Product
                                 />
                             ))
                         ) : (
                             <p>No products available for this type.</p>
                         )}
                     </div>
-                    {popupVisible && <PopUp message={popupMessage} onClose={closePopup} />}
+                    {popupVisible && <PopUp message={popupMessage} onClose={() => setPopupVisible(false)} />}
                 </div>
             </div>
         </div>

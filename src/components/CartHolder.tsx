@@ -1,30 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import Cart from '../components/Cart'; // Import Cart component
-import { Product as ProductType } from '../types'; // Import necessary types
+import React from 'react';
+import { Product } from '../types'; // Adjust the path as necessary
 
-const CartPage: React.FC = () => {
-    const [cart, setCart] = useState<ProductType[]>([]); // State for cart
+interface Props {
+    cart: Product[]; // Accept cart as a prop
+    removeFromCart: (id: string) => void; // Function to remove item from cart
+}
 
-    useEffect(() => {
-        // Load cart from local storage
-        const savedCart = localStorage.getItem('cart');
-        if (savedCart) {
-            setCart(JSON.parse(savedCart));
-        }
-    }, []);
-
-    // Function to remove an item from the cart
-    const removeFromCart = (index: number) => {
-        const updatedCart = cart.filter((_, i) => i !== index); // Remove the item at the given index
-        setCart(updatedCart); // Update the cart state
-        localStorage.setItem('cart', JSON.stringify(updatedCart)); // Update local storage
-    };
+const CartHolder: React.FC<Props> = ({ cart, removeFromCart }) => {
+    // Calculate total amount
+    const totalAmount = cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
 
     return (
-        <div>
-            <Cart cart={cart} removeFromCart={removeFromCart} /> {/* Pass removeFromCart as a prop */}
+        <div className="my-20 mt-[72px] max-w-4xl mx-auto p-5 bg-white shadow-lg rounded-lg">
+            <h1 className="text-3xl font-bold text-center mb-6 text-black">Your Cart</h1>
+            {cart.length === 0 ? (
+                <p className="text-center text-gray-600">Your cart is empty.</p>
+            ) : (
+                <ul className="space-y-4">
+                    {cart.map((item) => (
+                        <li key={item.id} className="flex justify-between items-center p-4 border-b border-gray-200">
+                            <div>
+                                <h2 className="text-xl font-semibold text-black">{item.name}</h2>
+                                <p className="text-green-700 ">${item.price.toFixed(2)}</p>
+                                <p className="text-gray-500">Quantity: {item.quantity}</p>
+                            </div>
+                            <div className="flex items-center">
+                                <img src={item.imageUrl} alt={item.name} className="w-16 h-16 object-cover rounded mr-4" />
+                                <button
+                                    onClick={() => removeFromCart(item.id)}
+                                    className="bg-red-500 text-white font-bold py-1 px-3 rounded hover:bg-red-600"
+                                >
+                                    Remove
+                                </button>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            )}
+            {cart.length > 0 && (
+                <div className="mt-6 flex justify-between items-center">
+                    <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600">
+                        Proceed to Checkout
+                    </button>
+                    <p className="text-xl font-bold text-red-500">Total: ${totalAmount}</p>
+                </div>
+            )}
         </div>
     );
 };
 
-export default CartPage;
+export default CartHolder;

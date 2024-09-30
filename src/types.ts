@@ -31,10 +31,9 @@ export interface Product {
 
 export interface ProductComment {
   id: string;
-  userName: string;
-  commentText: string;
+  user: string;
+  comment: string;
   rating?: number;
-  date: Date;
 }
 
 export interface CartItem {
