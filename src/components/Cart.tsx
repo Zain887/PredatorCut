@@ -28,7 +28,7 @@ const Cart: React.FC<Props> = ({ cart, removeFromCart }) => {
                             {cart.map((item, index) => (
                                 <tr key={index}>
                                     <td className="border border-gray-300 px-4 py-2">
-                                        <img src={item.imageUrl} alt={item.name} width={'100'} height={'100'} />
+                                        <img src={item.imageUrl[0]} alt={item.name} width={'100'} height={'100'} />
                                     </td>
                                     <td className="border border-gray-300 px-4 py-2">{item.name}</td>
                                     <td className="border border-gray-300 px-4 py-2">${item.price.toFixed(2)}</td>

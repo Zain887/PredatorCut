@@ -26,9 +26,6 @@ const SubCategoryList: React.FC<Props> = ({ categories, selectedCategoryId, onSe
                             onClick={() => onSelectProductType(subcategory.id)}  // Call onSelectProductType when clicked
                         >
                             <h3 className="text-lg font-semibold">{subcategory.name}</h3>
-                            {subcategory.description && (
-                                <p className="text-sm text-gray-600">{subcategory.description}</p>
-                            )}
                         </li>
                     ))}
                 </ul>
