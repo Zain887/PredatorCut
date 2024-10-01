@@ -1,22 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Slider from '../components/Slider';
 import Tracer from '../components/Tracer';
-import { headerImages } from '../data';
+import axios from 'axios'; // Import axios for making HTTP requests
+import { HeaderImages } from '../types';
+
 interface Props {
   // Define your component props here
 }
 
 const LandingPage: React.FC<Props> = () => {
+  const hasFetched = useRef(false); // useRef to keep track of fetching status
+  const [headerImages, setHeaderImages] = useState<HeaderImages[]>([]); // State to hold the slider images
+
   const flipImage = [
     '/flipImage/sword.webp',
     '/flipImage/axe.jpg',
     '/flipImage/kknife.jpg',
     '/flipImage/hknife.jpg',
   ];
+  // Function to fetch header images from the backend
+  const fetchHeaderImages = async () => {
+    try {
+      const response = await axios.get<HeaderImages[]>('http://localhost:3000/header-images');
+      if (response.status === 200) {
+        const updatedImages = response.data.map(image => ({
+          ...image,
+          url: `http://localhost:3000${image.url}`, // Make sure this path is correct
+        }));
+        setHeaderImages(updatedImages);
+      } else {
+        console.error('Failed to fetch header images:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching header images:', error);
+    }
+  };
+
+  useEffect(() => {
+    console.log('LandingPage mounted');
+    if (!hasFetched.current) {
+      fetchHeaderImages();
+      hasFetched.current = true;
+    }
+  }, []);
 
   return (
     <>
-      <Slider hImages={headerImages}/>
+      <Slider hImages={headerImages} />
       <p className='text-center text-[#918787] font-Roboto font-extrabold text-5xl my-20'>
         It's BOLD | It's SLEEK | It's UNSTOPPABLE
       </p>
