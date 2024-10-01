@@ -11,6 +11,7 @@ import LandingPage from './pages/LandingPage';
 import CartHolder from './components/CartHolder';
 import ProductDetails from './components/ProductDetails';
 import { Product } from './types'; // Ensure the correct import for Product
+import HeaderImageForm from './admin/headerImageForm';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -75,6 +76,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" />} />
             <Route path="/cart" element={<CartHolder cart={cart} removeFromCart={removeFromCart} />} />
             <Route path="/product/:id" element={<ProductDetails products={allProducts} addToCart={addToCart} />} />
+            <Route path='/admin/headerImageform' element={< HeaderImageForm/>}/>
           </Routes>
           <Footer categories={categories} />
         </div>
