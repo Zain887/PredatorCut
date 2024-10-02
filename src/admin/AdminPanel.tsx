@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import HeaderImageForm from './HeaderImageForm';
-import { Category, HeaderImages } from '../types';
+import { Category, HeaderImages, ProductTypes } from '../types';
 import CategoryForm from './CategoryForm';
+import ProductTypeForm from './ProductTypeForm';
 
 const AdminPanel: React.FC = () => {
     const [headerImage, setHeaderImage] = useState<HeaderImages[]>([]); // State to hold the fetched data
     const [categories, setCategories] = useState<Category[]>([]);
+    const [productType, setProductType] = useState<ProductTypes[]>([]);
     const [loading, setLoading] = useState(true); // Loading state for fetching
 
     // Function to fetch header images from the backend
@@ -33,6 +35,18 @@ const AdminPanel: React.FC = () => {
         }
     };
 
+    // Function to fetch categories from the backend
+    const fetchProductType = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/product-type'); // Replace with your actual API endpoint
+            setProductType(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching Categories:', error);
+            setLoading(false);
+        }
+    };
+
     // Function to delete an image by its ID
     const deleteHeaderImage = async (id: string) => {
         try {
@@ -44,10 +58,22 @@ const AdminPanel: React.FC = () => {
         }
     };
 
+    // Function to delete an image by its ID
+    const deleteCatgory = async (id: string) => {
+        try {
+            await axios.delete(`http://localhost:3000/category/${id}`); // Replace with your actual delete endpoint
+            // Remove the deleted image from the local state without re-fetching
+            setCategories(prevCategory => prevCategory.filter(categories => categories.id !== id));
+        } catch (error) {
+            console.error('Error deleting header image:', error);
+        }
+    };
+
     // Fetch the data when the component is mounted
     useEffect(() => {
         fetchHeaderImages();
         fetchCategoires();
+        fetchProductType();
     }, []);
 
     if (loading) {
@@ -109,7 +135,38 @@ const AdminPanel: React.FC = () => {
                                             <td className="border-b px-4 py-2 text-black">{data.name}</td>
                                             <td className="border-b px-4 py-2">
                                                 <button
-                                                    onClick={() => deleteHeaderImage(data.id)}
+                                                    onClick={() => deleteCatgory(data.id)}
+                                                    className="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-700"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div className='mt-5'>
+                    <div className="flex items-center justify-evenly">
+                        <ProductTypeForm />
+                        <div>
+                            <table className="w-full text-left">
+                                <thead className='text-black font-bold'>
+                                    <tr>
+                                        <th className="border-b px-4 py-2">Categories</th>
+                                        <th className="border-b px-4 py-2">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {productType.map(data => (
+                                        <tr key={data.id}>
+                                            <td className="border-b px-4 py-2 text-black">{data.name}</td>
+                                            <td className="border-b px-4 py-2">
+                                                <button
+                                                    onClick={() => deleteCatgory(data.id)}
                                                     className="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-700"
                                                 >
                                                     Delete

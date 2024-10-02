@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios'; // Import axios for making API requests
-
-// Define the interface for Category
-export interface Category {
-  id: string;
-  name: string;
-}
+import { Category } from '../types';
 
 interface Props {
   // Define any other props you need
-  onCategoryCreated?: (category: Category) => void; // Callback to parent if needed
+  onCategoryCreated?: (category: Category[]) => void; // Callback to parent if needed
 }
 
 const CategoryForm: React.FC<Props> = ({ onCategoryCreated }) => {
