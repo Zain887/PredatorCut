@@ -27,6 +27,7 @@ export interface Product {
   quantity: number;
   tag?: string[];
   subcategoryId?: string;
+  comments?: ProductComment[];
 }
 
 export interface ProductDetails {

@@ -1,7 +1,12 @@
-// ProductDetails.tsx
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Product } from '../types'; // Adjust the path as necessary
+
+interface Comment {
+    id: string;
+    user: string;
+    comment: string;
+}
 
 interface Props {
     products: Product[]; // Array of products passed as props to the component
@@ -19,9 +24,10 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
 
     return (
         <div className='my-20 w-full bg-white p-5'>
-            <h1 className='text-center py-20 bg-gradient-to-b from-[#666666] to-white text-transparent bg-clip-text font-bold uppercase'>Product Details</h1>
+            <h1 className='text-center py-20 bg-gradient-to-b from-[#666666] to-white text-transparent bg-clip-text font-bold uppercase'>
+                Product Details
+            </h1>
             <div className="flex flex-col md:flex-row w-full max-w-6xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
-
                 {/* Left Section: Images */}
                 <div className="w-full md:w-1/2 p-4 flex flex-col items-center">
                     {/* Large Image */}
@@ -85,7 +91,7 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
                 <h2 className="text-lg font-bold mb-2 text-black text-center">Comments</h2>
                 {product.comments && product.comments.length > 0 ? (
                     <ul>
-                        {product.comments.map((comment) => (
+                        {product.comments.map((comment: Comment) => (
                             <li key={comment.id} className="mb-2 border-b pb-2">
                                 <p className="font-semibold text-black">{comment.user}:</p>
                                 <p className="text-gray-700">{comment.comment}</p>
