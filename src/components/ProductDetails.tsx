@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Product } from '../types'; // Adjust the path as necessary
-
-interface Comment {
-    id: string;
-    user: string;
-    comment: string;
-}
+import { Product, ProductComment as Comment } from '../types'; // Adjust the path as necessary
 
 interface Props {
     products: Product[]; // Array of products passed as props to the component
