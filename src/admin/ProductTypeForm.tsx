@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'; // Import axios for making API requests
-import { ProductTypes } from '../types'; // Import ProductTypes interface
+import { Subcategory } from '../types'; // Import Subcategory interface
 
 interface Props {
-    onProductTypeCreated?: (productTypes: ProductTypes[]) => void; // Callback to parent if needed
+    onProductTypeCreated?: (subcategory: Subcategory[]) => void; // Callback to parent if needed
 }
 
 const ProductTypeForm: React.FC<Props> = ({ onProductTypeCreated }) => {
@@ -38,7 +38,7 @@ const ProductTypeForm: React.FC<Props> = ({ onProductTypeCreated }) => {
 
         try {
             // Make an API call to create the product type in the backend
-            const response = await axios.post('http://localhost:3000/product-type', {
+            const response = await axios.post('http://localhost:3000/subcategory', {
                 name,
                 categoryId, // Pass the categoryId
             });

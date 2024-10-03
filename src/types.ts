@@ -7,13 +7,13 @@ export interface HeaderImages {
 export interface Category {
   id: string;
   name: string;
-  subcategories: ProductTypes[];
+  subcategories: Subcategory[];
 }
 
-export interface ProductTypes {
+export interface Subcategory {
   id: string;
   name: string;
-  products: Product[];
+  categoryId: string;
 }
 
 export interface Product {
@@ -22,18 +22,19 @@ export interface Product {
   shortDescription?: string;
   price: number;
   imageUrl: string[];
-  productDetails?: {
-    description?: string,
-    bladeLength?: string,
-    bladeMaterial?: string,
-    handleLength?: string,
-    handleMaterial?: string,
-    totalLength?: string,
-
-  }
+  productDetails?: ProductDetails;
   quantity: number;
   tag?: string[];
-  comments?: ProductComment[];
+  subcategoryId?: string;
+}
+
+export interface ProductDetails {
+  description?: string;
+  bladeLength?: string;
+  bladeMaterial?: string;
+  handleLength?: string;
+  handleMaterial?: string;
+  totalLength?: string;
 }
 
 export interface ProductComment {

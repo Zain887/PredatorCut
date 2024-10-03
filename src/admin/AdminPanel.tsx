@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import HeaderImageForm from './HeaderImageForm';
-import { Category, HeaderImages, ProductTypes } from '../types';
+import { Category, HeaderImages, Subcategory } from '../types';
 import CategoryForm from './CategoryForm';
 import ProductTypeForm from './ProductTypeForm';
+import ProductForm from './ProductForm';
 
 const AdminPanel: React.FC = () => {
     const [headerImage, setHeaderImage] = useState<HeaderImages[]>([]); // State to hold the fetched data
     const [categories, setCategories] = useState<Category[]>([]);
-    const [productType, setProductType] = useState<ProductTypes[]>([]);
+    const [productType, setProductType] = useState<Subcategory[]>([]);
     const [loading, setLoading] = useState(true); // Loading state for fetching
 
     // Function to fetch header images from the backend
@@ -38,7 +39,7 @@ const AdminPanel: React.FC = () => {
     // Function to fetch categories from the backend
     const fetchProductType = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/product-type'); // Replace with your actual API endpoint
+            const response = await axios.get('http://localhost:3000/subcategory'); // Replace with your actual API endpoint
             setProductType(response.data);
             setLoading(false);
         } catch (error) {
@@ -58,7 +59,7 @@ const AdminPanel: React.FC = () => {
         }
     };
 
-    // Function to delete an image by its ID
+    // Function to delete an category by its ID
     const deleteCatgory = async (id: string) => {
         try {
             await axios.delete(`http://localhost:3000/category/${id}`); // Replace with your actual delete endpoint
@@ -68,6 +69,18 @@ const AdminPanel: React.FC = () => {
             console.error('Error deleting header image:', error);
         }
     };
+
+    // Function to delete an subcategory by its ID
+    const deleteProductType = async (id: string) => {
+        try {
+            await axios.delete(`http://localhost:3000/subcategory/${id}`); // Replace with your actual delete endpoint
+            // Remove the deleted image from the local state without re-fetching
+            setProductType(prevProductType => prevProductType.filter(ProductType => ProductType.id !== id));
+        } catch (error) {
+            console.error('Error deleting subcategory:', error);
+        }
+    };
+
 
     // Fetch the data when the component is mounted
     useEffect(() => {
@@ -166,7 +179,7 @@ const AdminPanel: React.FC = () => {
                                             <td className="border-b px-4 py-2 text-black">{data.name}</td>
                                             <td className="border-b px-4 py-2">
                                                 <button
-                                                    onClick={() => deleteCatgory(data.id)}
+                                                    onClick={() => deleteProductType(data.id)}
                                                     className="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-700"
                                                 >
                                                     Delete
@@ -178,6 +191,11 @@ const AdminPanel: React.FC = () => {
                             </table>
                         </div>
                     </div>
+                </div>
+                <hr />
+
+                <div className="mt-5">
+                    <ProductForm />
                 </div>
             </div>
         </div>
