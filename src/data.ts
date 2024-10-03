@@ -18,6 +18,7 @@ export const categories: Category[] = [
         subcategories: [
             {
                 id: uuidv4(),
+                categoryId: 'Swords', // Added categoryId
                 name: 'Combat Swords',
                 products: [
                     {
@@ -56,6 +57,7 @@ export const categories: Category[] = [
         subcategories: [
             {
                 id: uuidv4(),
+                categoryId: 'Axes', // Added categoryId
                 name: 'Throwing Axes',
                 products: [
                     {
@@ -86,6 +88,7 @@ export const categories: Category[] = [
         subcategories: [
             {
                 id: uuidv4(),
+                categoryId: 'Kitchen Knives', // Added categoryId
                 name: 'Chef’s Knives',
                 products: [
                     {
@@ -116,6 +119,7 @@ export const categories: Category[] = [
         subcategories: [
             {
                 id: uuidv4(),
+                categoryId:'Hunting Knives',
                 name: 'Outdoor Hunting Knives',
                 products: [
                     {
@@ -146,6 +150,7 @@ export const categories: Category[] = [
         subcategories: [
             {
                 id: uuidv4(),
+                categoryId:'Dental Instruments',
                 name: 'Dental Kits',
                 products: [
                     {
@@ -175,6 +180,7 @@ export const categories: Category[] = [
         subcategories: [
             {
                 id: uuidv4(),
+                categoryId:'Beauty Instruments',
                 name: 'Facial Tools',
                 products: [
                     {
