@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Product, ProductComment as Comment } from '../types'; // Adjust the path as necessary
+import ProductComment from '../admin/ProductComment'; // Import the ProductComment component
 
 interface Props {
     products: Product[]; // Array of products passed as props to the component
@@ -14,6 +15,7 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
     if (!product) {
         return <p>Product not found.</p>; // Display this if product ID is invalid
     }
+
     const [currentImage, setCurrentImage] = useState(product.imageUrl[0]);
 
     return (
@@ -25,7 +27,7 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
                 {/* Left Section: Images */}
                 <div className="w-full md:w-1/2 p-4 flex flex-col items-center">
                     {/* Large Image */}
-                    <div className=" w-96 h-96 mb-4 flex">
+                    <div className="w-96 h-96 mb-4 flex">
                         <img src={currentImage} alt={product.name} className="w-full h-auto object-cover rounded-lg" />
                     </div>
 
@@ -61,12 +63,29 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
                     )}
 
                     {/* Product Details */}
-                    <p className='text-black'><span className='font-bold'>Blade Length: </span>{product.productDetails?.bladeLength}</p>
-                    <p className='text-black'><span className='font-bold'>Blade Material: </span>{product.productDetails?.bladeMaterial}</p>
-                    <p className='text-black'><span className='font-bold'>Handle Length: </span>{product.productDetails?.handleLength}</p>
-                    <p className='text-black'><span className='font-bold'>Handle Material: </span>{product.productDetails?.handleMaterial}</p>
-                    <p className='text-black'><span className='font-bold'>Total Length: </span>{product.productDetails?.totalLength}</p>
-                    <p className='text-black'><span className='font-bold'>Description: </span>{product.productDetails?.description}</p>
+                    {product.productDetails?.bladeLength && (
+                        <p className='text-black'><span className='font-bold'>Blade Length: </span>{product.productDetails.bladeLength}</p>
+                    )}
+
+                    {product.productDetails?.bladeMaterial && (
+                        <p className='text-black'><span className='font-bold'>Blade Material: </span>{product.productDetails.bladeMaterial}</p>
+                    )}
+
+                    {product.productDetails?.handleLength && (
+                        <p className='text-black'><span className='font-bold'>Handle Length: </span>{product.productDetails.handleLength}</p>
+                    )}
+
+                    {product.productDetails?.handleMaterial && (
+                        <p className='text-black'><span className='font-bold'>Handle Material: </span>{product.productDetails.handleMaterial}</p>
+                    )}
+
+                    {product.productDetails?.totalLength && (
+                        <p className='text-black'><span className='font-bold'>Total Length: </span>{product.productDetails.totalLength}</p>
+                    )}
+
+                    {product.productDetails?.description && (
+                        <p className='text-black'><span className='font-bold'>Description: </span>{product.productDetails.description}</p>
+                    )}
                     <p className="text-xl font-semibold text-green-600">${product.price.toFixed(2)}</p>
 
                     {/* Add to Cart Button */}
@@ -81,20 +100,8 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
             </div>
 
             {/* Comments Section */}
-            <div className='w-full bg-white p-5'>
-                <h2 className="text-lg font-bold mb-2 text-black text-center">Comments</h2>
-                {product.comments && product.comments.length > 0 ? (
-                    <ul>
-                        {product.comments.map((comment: Comment) => (
-                            <li key={comment.id} className="mb-2 border-b pb-2">
-                                <p className="font-semibold text-black">{comment.user}:</p>
-                                <p className="text-gray-700">{comment.comment}</p>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-gray-500">No comments available.</p>
-                )}
+            <div className='mt-4'>
+                <ProductComment productId={product.id} />
             </div>
         </div>
     );

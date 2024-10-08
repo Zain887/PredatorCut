@@ -12,6 +12,7 @@ import CartHolder from './components/CartHolder';
 import ProductDetails from './components/ProductDetails';
 import { Product } from './types'; // Ensure the correct import for Product
 import AdminPanel from './admin/AdminPanel';
+import ErrorBoundary from './ErrorBoundry';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -59,28 +60,30 @@ function App() {
 
   return (
     <Router>
-      {loading ? (
-        <LoadingAnimation />
-      ) : (
-        <div className="fade-in">
-          <Menubar categories={categories} />
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            {categories.map((category) => (
-              <Route
-                key={category.id}
-                path={`/${category.name}`}
-                element={<CategoryPage addToCart={addToCart} selectedCategory={category} headerImages={headerImages} />}
-              />
-            ))}
-            <Route path="*" element={<Navigate to="/" />} />
-            <Route path="/cart" element={<CartHolder cart={cart} removeFromCart={removeFromCart} />} />
-            <Route path="/product/:id" element={<ProductDetails products={allProducts} addToCart={addToCart} />} />
-            <Route path='/admin' element={< AdminPanel/>}/>
-          </Routes>
-          <Footer categories={categories} />
-        </div>
-      )}
+      <ErrorBoundary>
+        {loading ? (
+          <LoadingAnimation />
+        ) : (
+          <div className="fade-in">
+            <Menubar categories={categories} />
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              {categories.map((category) => (
+                <Route
+                  key={category.id}
+                  path={`/${category.name}`}
+                  element={<CategoryPage addToCart={addToCart} selectedCategory={category} headerImages={headerImages} />}
+                />
+              ))}
+              <Route path="*" element={<Navigate to="/" />} />
+              <Route path="/cart" element={<CartHolder cart={cart} removeFromCart={removeFromCart} />} />
+              <Route path="/product/:id" element={<ProductDetails products={allProducts} addToCart={addToCart} />} />
+              <Route path='/admin' element={< AdminPanel />} />
+            </Routes>
+            <Footer categories={categories} />
+          </div>
+        )}
+      </ErrorBoundary>
     </Router>
   );
 }
