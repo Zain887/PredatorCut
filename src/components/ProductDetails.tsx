@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Product, ProductComment as Comment } from '../types'; // Adjust the path as necessary
+import { Product} from '../types'; // Adjust the path as necessary
 import ProductComment from '../admin/ProductComment'; // Import the ProductComment component
 
 interface Props {
