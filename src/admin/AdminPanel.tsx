@@ -125,7 +125,7 @@ const AdminPanel: React.FC = () => {
                                     <tr key={image.id}>
                                         <td className="border-b px-4 py-2 text-black">{image.article}</td>
                                         <td className="border-b px-4 py-2">
-                                            <img src={`http://localhost:3000${image.url}`} alt={image.article} className="w-auto h-20 object-cover" />
+                                            <img src={`${API_URL}${image.url}`} alt={image.article} className="w-auto h-20 object-cover" />
                                         </td>
                                         <td className="border-b px-4 py-2">
                                             <button onClick={() => deleteHeaderImage(image.id)} className="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-700">
