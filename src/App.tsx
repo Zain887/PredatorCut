@@ -42,11 +42,11 @@ function App() {
 
     const fetchHeaderImages = async () => {
       try {
-        const response = await axios.get<HeaderImages[]>('http://localhost:3000/header-images');
+        const response = await axios.get<HeaderImages[]>(`${API_URL}header-images`);
         if (response.status === 200) {
           const updatedImages = response.data.map(image => ({
             ...image,
-            url: `http://localhost:3000${image.url}`, // Make sure this path is correct
+            url: `${API_URL}${image.url}`, // Make sure this path is correct
           }));
           setHeaderImage(updatedImages);
         } else {
