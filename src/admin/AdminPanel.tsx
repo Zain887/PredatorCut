@@ -25,7 +25,7 @@ const AdminPanel: React.FC = () => {
 
     const fetchHeaderImages = async () => {
         try {
-            const response = await axios.get(`${API_URL}header-images`);
+            const response = await axios.get(`${API_URL}/header-images`);
             setHeaderImage(response.data);
         } catch (error) {
             console.error('Error fetching header images:', error);
@@ -34,7 +34,7 @@ const AdminPanel: React.FC = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await axios.get(`${API_URL}category`);
+            const response = await axios.get(`${API_URL}/category`);
             setCategories(response.data);
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -43,7 +43,7 @@ const AdminPanel: React.FC = () => {
 
     const fetchProductType = async () => {
         try {
-            const response = await axios.get(`${API_URL}subcategory`);
+            const response = await axios.get(`${API_URL}/subcategory`);
             setProductType(response.data);
         } catch (error) {
             console.error('Error fetching product types:', error);
@@ -52,7 +52,7 @@ const AdminPanel: React.FC = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await axios.get(`${API_URL}product`); // Assuming you have this endpoint
+            const response = await axios.get(`${API_URL}/product`); // Assuming you have this endpoint
             setProducts(response.data);
         } catch (error) {
             console.error('Error fetching products:', error);
@@ -61,7 +61,7 @@ const AdminPanel: React.FC = () => {
 
     const deleteHeaderImage = async (id: string) => {
         try {
-            await axios.delete(`${API_URL}header-images/${id}`);
+            await axios.delete(`${API_URL}/header-images/${id}`);
             setHeaderImage(prevImages => prevImages.filter(image => image.id !== id));
         } catch (error) {
             console.error('Error deleting header image:', error);
@@ -70,7 +70,7 @@ const AdminPanel: React.FC = () => {
 
     const deleteCategory = async (id: string) => {
         try {
-            await axios.delete(`${API_URL}category/${id}`);
+            await axios.delete(`${API_URL}/category/${id}`);
             setCategories(prevCategories => prevCategories.filter(category => category.id !== id));
         } catch (error) {
             console.error('Error deleting category:', error);
@@ -79,7 +79,7 @@ const AdminPanel: React.FC = () => {
 
     const deleteProductType = async (id: string) => {
         try {
-            await axios.delete(`${API_URL}subcategory/${id}`);
+            await axios.delete(`${API_URL}/subcategory/${id}`);
             setProductType(prevProductType => prevProductType.filter(productType => productType.id !== id));
         } catch (error) {
             console.error('Error deleting product type:', error);
