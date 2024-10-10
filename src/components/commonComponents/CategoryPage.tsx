@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { HeaderImages, Category, Product as ProductType } from '../../types'; // Import necessary types
 import SubCategoryList from './SubCategoryList';
-import { categories } from '../../data';
 import Product from './Product';
 import PopUp from '../PopUp';
 
 interface Props {
     selectedCategory: Category; // The selected category from the menu
     headerImages: HeaderImages[]; // Array of header images to display dynamically
+    categories: Category[]; // Array of categories to display
     addToCart: (product: ProductType) => void; // Ensure you have the correct signature
 }
 
-const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, addToCart }) => {
+const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, categories, addToCart }) => {
     const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<string | null>(null);
     const [popupVisible, setPopupVisible] = useState(false); // State for the popup
     const [popupMessage, setPopupMessage] = useState('');
@@ -29,8 +29,7 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, addToCa
     // Function to handle subcategory selection
     const handleSelectSubcategory = (subcategoryId: string) => {
         setSelectedSubcategoryId(subcategoryId);
-    };
-
+    }
     // Function to show popup notification
     const showPopup = (message: string) => {
         setPopupMessage(message);
@@ -98,7 +97,7 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, addToCa
             <div className='p-5 flex'>
                 <div className='w-[20%]'>
                     <SubCategoryList
-                        categories={categories}
+                        categories={categories} // Use the categories prop
                         selectedCategoryId={selectedCategory.id}
                         onSelectProductType={handleSelectSubcategory}
                     />

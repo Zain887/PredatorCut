@@ -1,48 +1,19 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React from 'react';
 import Slider from '../components/Slider';
 import Tracer from '../components/Tracer';
-import axios from 'axios'; // Import axios for making HTTP requests
 import { HeaderImages } from '../types';
 
 interface Props {
-  // Define your component props here
+  headerImages: HeaderImages[]; // Define the headerImages prop
 }
 
-const LandingPage: React.FC<Props> = () => {
-  const hasFetched = useRef(false); // useRef to keep track of fetching status
-  const [headerImages, setHeaderImages] = useState<HeaderImages[]>([]); // State to hold the slider images
-
+const LandingPage: React.FC<Props> = ({ headerImages }) => {
   const flipImage = [
     '/flipImage/sword.webp',
     '/flipImage/axe.jpg',
     '/flipImage/kknife.jpg',
     '/flipImage/hknife.jpg',
   ];
-  // Function to fetch header images from the backend
-  const fetchHeaderImages = async () => {
-    try {
-      const response = await axios.get<HeaderImages[]>('http://localhost:3000/header-images');
-      if (response.status === 200) {
-        const updatedImages = response.data.map(image => ({
-          ...image,
-          url: `http://localhost:3000${image.url}`, // Make sure this path is correct
-        }));
-        setHeaderImages(updatedImages);
-      } else {
-        console.error('Failed to fetch header images:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error fetching header images:', error);
-    }
-  };
-
-  useEffect(() => {
-    console.log('LandingPage mounted');
-    if (!hasFetched.current) {
-      fetchHeaderImages();
-      hasFetched.current = true;
-    }
-  }, []);
 
   return (
     <>
@@ -82,7 +53,7 @@ const LandingPage: React.FC<Props> = () => {
                 Hand Crafted in PAKISTAN.
               </p>
               <a href="/" className='text-lg font-bold bg-[#666666] text-white border p-2 border-[#666666] hover:bg-white hover:text-[#666666] duration-150'>
-                Descover More
+                Discover More
               </a>
             </div>
           </div>
