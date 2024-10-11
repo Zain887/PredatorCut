@@ -30,8 +30,7 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
   const [error, setError] = useState<string | null>(null);
 
   const API_URL = import.meta.env.VITE_API_URL as string; // Add type assertion
-  console.log(import.meta.env, 'error defined');
-
+  
   // Fetch categories from the backend
   useEffect(() => {
     async function fetchCategories() {
@@ -49,19 +48,21 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
 
   useEffect(() => {
     if (!categoryId) return;
-
+  
     async function fetchSubcategories() {
       try {
-        const response = await axios.get(`${API_URL}/${categoryId}/subcategories`);
+        const response = await axios.get(`${API_URL}/subcategory/category/${categoryId}`);
         setSubcategories(response.data);
       } catch (err) {
         setError('Failed to fetch subcategories');
         console.error(err);
       }
     }
-
+  
     fetchSubcategories();
   }, [categoryId]);
+  
+  
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
