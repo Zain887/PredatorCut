@@ -34,7 +34,7 @@ const ProductComment: React.FC<Props> = ({ productId }) => {
 
         try {
             // Send a POST request to the backend to create the comment using axios
-            const response = await axios.post(`${API_URL}product-comment/${productId}`, newComment);
+            const response = await axios.post(`${API_URL}/product-comment/${productId}`, newComment);
 
             if (response.status === 201 || response.status === 200) {
                 setMessage('Comment submitted successfully!');

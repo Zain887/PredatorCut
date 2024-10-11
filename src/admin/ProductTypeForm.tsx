@@ -15,11 +15,15 @@ const ProductTypeForm: React.FC<Props> = ({ onProductTypeCreated }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
+    const API_URL = import.meta.env.VITE_API_URL as string; // Add type assertion
+    console.log(import.meta.env, 'error defined');
+
+
     // Fetch categories from the backend
     useEffect(() => {
         async function fetchCategories() {
             try {
-                const response = await axios.get('http://localhost:3000/category');
+                const response = await axios.get(`${API_URL}/category`);
                 setCategories(response.data);
             } catch (err) {
                 console.error('Error fetching categories:', err);
@@ -38,7 +42,7 @@ const ProductTypeForm: React.FC<Props> = ({ onProductTypeCreated }) => {
 
         try {
             // Make an API call to create the product type in the backend
-            const response = await axios.post('http://localhost:3000/subcategory', {
+            const response = await axios.post(`${API_URL}/subcategory`, {
                 name,
                 categoryId, // Pass the categoryId
             });

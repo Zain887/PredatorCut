@@ -12,6 +12,9 @@ const HeaderImageForm: React.FC = () => {
         file: null,
     });
 
+    const API_URL = import.meta.env.VITE_API_URL as string; // Add type assertion
+    console.log(import.meta.env, 'error defined');
+
     const [message, setMessage] = useState<string | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null); // State for image preview
 
@@ -53,7 +56,7 @@ const HeaderImageForm: React.FC = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:3000/header-images', formDataToSend, {
+            const response = await axios.post(`${API_URL}/header-images`, formDataToSend, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

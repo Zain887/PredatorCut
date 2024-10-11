@@ -29,11 +29,14 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const API_URL = import.meta.env.VITE_API_URL as string; // Add type assertion
+  console.log(import.meta.env, 'error defined');
+
   // Fetch categories from the backend
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const response = await axios.get('http://localhost:3000/category');
+        const response = await axios.get(`${API_URL}/category`);
         setCategories(response.data);
       } catch (err) {
         setError('Failed to fetch categories');
@@ -49,7 +52,7 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
 
     async function fetchSubcategories() {
       try {
-        const response = await axios.get(`http://localhost:3000/category/${categoryId}/subcategories`);
+        const response = await axios.get(`${API_URL}/${categoryId}/subcategories`);
         setSubcategories(response.data);
       } catch (err) {
         setError('Failed to fetch subcategories');
@@ -79,7 +82,7 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
         productDetails,
       };
 
-      const response = await axios.post('http://localhost:3000/product', productData);
+      const response = await axios.post(`${API_URL}/product`, productData);
 
       if (response.data && onProductCreated) {
         onProductCreated(response.data); // Pass the newly created product to the parent

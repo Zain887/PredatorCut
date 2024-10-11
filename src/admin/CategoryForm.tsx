@@ -14,6 +14,9 @@ const CategoryForm: React.FC<Props> = ({ onCategoryCreated }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  const API_URL = import.meta.env.VITE_API_URL as string; // Add type assertion
+  console.log(import.meta.env, 'error defined');
+
   // Function to handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +25,7 @@ const CategoryForm: React.FC<Props> = ({ onCategoryCreated }) => {
 
     try {
       // Make an API call to create the category in the backend
-      const response = await axios.post('http://localhost:3000/category', {
+      const response = await axios.post(`${API_URL}/category`, {
         name,
       });
 
