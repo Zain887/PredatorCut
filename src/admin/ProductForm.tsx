@@ -62,8 +62,6 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
     fetchSubcategories();
   }, [categoryId]);
 
-
-
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -160,7 +158,7 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
+    <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg sm:p-4">
       <h1 className="text-3xl font-bold text-center mb-6 text-gray-900">Create New Product</h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -217,7 +215,7 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
           {imageUrl.length > 0 && (
             <div className="mt-4">
               <h4 className="text-lg font-medium text-gray-700">Image Preview:</h4>
-              <div className="flex space-x-4 mt-2">
+              <div className="flex space-x-2 overflow-x-auto mt-2">
                 {imageUrl.map((url, index) => (
                   <img key={index} src={url} alt={`preview-${index}`} className="w-24 h-24 object-cover rounded-md" />
                 ))}
@@ -225,6 +223,7 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
             </div>
           )}
         </div>
+
         {/* Product Details - Description */}
         <div>
           <label htmlFor="description" className="block text-lg font-medium text-gray-700">Product Description</label>
@@ -302,83 +301,67 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
           />
         </div>
 
-        {/* Short Description */}
-        <div>
-          <label htmlFor="shortDescription" className="block text-lg font-medium text-gray-700">Short Description</label>
-          <textarea
-            id="shortDescription"
-            value={shortDescription}
-            onChange={(e) => setShortDescription(e.target.value)}
-            placeholder="Enter a short description"
-            className="bg-white text-black mt-2 w-full p-3 border border-gray-300 rounded-md"
-          />
-        </div>
-
         {/* Category Selection */}
         <div>
-          <label htmlFor="categoryId" className="block text-lg font-medium text-gray-700">Select Category</label>
+          <label htmlFor="category" className="block text-lg font-medium text-gray-700">Category</label>
           <select
-            id="categoryId"
+            id="category"
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            required
             className="bg-white text-black mt-2 w-full p-3 border border-gray-300 rounded-md"
           >
             <option value="">Select a category</option>
             {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
+              <option key={category.id} value={category.id}>{category.name}</option>
             ))}
           </select>
         </div>
 
         {/* Subcategory Selection */}
-        {categoryId && (
-          <div>
-            <label htmlFor="subcategoryId" className="block text-lg font-medium text-gray-700">Select Subcategory</label>
-            <select
-              id="subcategoryId"
-              value={subcategoryId}
-              onChange={(e) => setSubcategoryId(e.target.value)}
-              required
-              className="bg-white text-black mt-2 w-full p-3 border border-gray-300 rounded-md"
-            >
-              <option value="">Select a subcategory</option>
-              {subcategories.map((subcategory) => (
-                <option key={subcategory.id} value={subcategory.id}>
-                  {subcategory.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {/* Product Tags */}
         <div>
-          <label htmlFor="tag" className="block text-lg font-medium text-gray-700">Tags (comma separated)</label>
+          <label htmlFor="subcategory" className="block text-lg font-medium text-gray-700">Subcategory</label>
+          <select
+            id="subcategory"
+            value={subcategoryId}
+            onChange={(e) => setSubcategoryId(e.target.value)}
+            className="bg-white text-black mt-2 w-full p-3 border border-gray-300 rounded-md"
+            disabled={!categoryId} // Disable if no category is selected
+          >
+            <option value="">Select a subcategory</option>
+            {subcategories.map((subcategory) => (
+              <option key={subcategory.id} value={subcategory.id}>{subcategory.name}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Tags */}
+        <div>
+          <label htmlFor="tags" className="block text-lg font-medium text-gray-700">Tags (comma-separated)</label>
           <input
             type="text"
-            id="tag"
+            id="tags"
             value={tag}
             onChange={(e) => setTag(e.target.value)}
-            placeholder="Enter product tags"
+            placeholder="Enter tags"
             className="bg-white text-black mt-2 w-full p-3 border border-gray-300 rounded-md"
           />
         </div>
 
         {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-4 w-full p-3 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700 focus:outline-none"
-        >
-          {loading ? 'Creating Product...' : 'Create Product'}
-        </button>
+        <div>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`mt-4 w-full p-3 text-lg font-semibold text-white rounded-md ${loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'} focus:outline-none`}
+          >
+            {loading ? 'Creating...' : 'Create Product'}
+          </button>
+        </div>
       </form>
 
-      {message && <p className="mt-4 text-center text-lg text-green-600">{message}</p>}
-      {error && <p className="mt-4 text-center text-lg text-red-600">{error}</p>}
+      {/* Error or Success Message */}
+      {message && <p className="mt-4 text-green-600">{message}</p>}
+      {error && <p className="mt-4 text-red-600">{error}</p>}
     </div>
   );
 };

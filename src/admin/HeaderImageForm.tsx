@@ -75,8 +75,8 @@ const HeaderImageForm: React.FC = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg mt-[72px]">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">Create Header Image</h2>
+        <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg mt-16 md:mt-[72px]">
+            <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Create Header Image</h2>
             <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <div className="mb-4">
                     <label className="block text-gray-700 font-semibold mb-2">Article:</label>

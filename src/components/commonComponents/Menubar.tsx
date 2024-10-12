@@ -21,7 +21,7 @@ const Menubar: React.FC<Props> = ({ categories }) => {
     const dropdownCategories = categories.slice(4);
 
     return (
-        <nav className="flex items-center justify-between px-6 py-4 fixed top-0 w-full bg-black bg-opacity-75 z-20">
+        <nav className="flex items-center justify-between px-6 py-1 fixed top-0 w-full bg-black bg-opacity-75 z-20">
             {/* Logo */}
             <NavLink to="/" className="w-40">
                 <img src="/logo.svg" alt="predatorCut" className="w-full h-auto" />

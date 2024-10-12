@@ -49,11 +49,11 @@ const Slider: React.FC<Props> = (props) => {
                     </div>
                 </div>
             ))}
-            <div className='flex items-center justify-center mt-4 md:mt-5'>
+            <div className='absolute bottom-2 w-full text-center flex items-center justify-center mt-4 md:mt-5'>
                 {hImages.map((_, index) => (
                     <button
                         key={index}
-                        className={`w-3 h-3 mx-1 rounded-lg ${index === currentImageIndex ? 'bg-white' : 'bg-[#666666]'
+                        className={`w-3 h-3 p-0 mx-1 rounded-lg ${index === currentImageIndex ? 'bg-white' : 'bg-[#666666]'
                             }`}
                         onClick={() => handleDotClick(index)}
                     ></button>
