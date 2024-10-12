@@ -30,7 +30,7 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
   const [error, setError] = useState<string | null>(null);
 
   const API_URL = import.meta.env.VITE_API_URL as string; // Add type assertion
-  
+
   // Fetch categories from the backend
   useEffect(() => {
     async function fetchCategories() {
@@ -48,7 +48,7 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
 
   useEffect(() => {
     if (!categoryId) return;
-  
+
     async function fetchSubcategories() {
       try {
         const response = await axios.get(`${API_URL}/subcategory/category/${categoryId}`);
@@ -58,11 +58,11 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
         console.error(err);
       }
     }
-  
+
     fetchSubcategories();
   }, [categoryId]);
-  
-  
+
+
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -122,12 +122,32 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
     setTag('');
   };
 
-  // Handle image upload and convert to base64 or URL
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle image upload and convert to actual image path
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
-      const imageUrls = filesArray.map(file => URL.createObjectURL(file));
-      setImageUrl(imageUrls);
+
+      // Create a FormData object to hold the files
+      const formData = new FormData();
+      filesArray.forEach(file => {
+        formData.append('images', file); // 'images' is the name of the field your backend expects
+      });
+
+      try {
+        // Make the API request to upload images
+        const response = await axios.post(`${API_URL}/product/upload`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+
+        // Assuming the server response contains the URLs of the uploaded images
+        const imageUrls = response.data.urls; // Adjust this according to your response structure
+        setImageUrl(imageUrls); // Set the state with actual image URLs
+
+      } catch (error) {
+        console.error('Error uploading images:', error);
+      }
     }
   };
 

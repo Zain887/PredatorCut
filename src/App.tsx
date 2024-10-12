@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import Menubar from './components/commonComponents/Menubar';
-import LoadingAnimation from './components/loading/LoadingAnimation';
+// import LoadingAnimation from './components/loading/LoadingAnimation';
 import Footer from './components/commonComponents/Footer';
 import CategoryPage from './components/commonComponents/CategoryPage';
 import LandingPage from './pages/LandingPage';
@@ -15,20 +15,20 @@ import ErrorBoundary from './ErrorBoundry';
 import axios from 'axios';
 
 function App() {
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState<Product[]>([]); // Initialize cart state
   const [categories, setCategories] = useState<Category[]>([]);
   const [headerImage, setHeaderImage] = useState<HeaderImages[]>([]);
   const API_URL = import.meta.env.VITE_API_URL as string; // Make sure the API URL is properly defined
 
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     setLoading(false);
+  //   }, 2000);
 
-    return () => clearTimeout(timeout);
-  }, []);
+  //   return () => clearTimeout(timeout);
+  // }, []);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -96,9 +96,9 @@ function App() {
   return (
     <Router>
       <ErrorBoundary>
-        {loading ? (
+        {/* {loading ? (
           <LoadingAnimation />
-        ) : (
+        ) : ( */}
           <div className="fade-in">
             <Menubar categories={categories} />
             <Routes>
@@ -118,7 +118,7 @@ function App() {
             </Routes>
             <Footer categories={categories} />
           </div>
-        )}
+        {/* )} */}
       </ErrorBoundary>
     </Router>
   );

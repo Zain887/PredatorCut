@@ -1,11 +1,12 @@
+// ProductDetails.tsx
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Product} from '../types'; // Adjust the path as necessary
+import { Product } from '../types'; // Ensure this path is correct
 import ProductComment from '../admin/ProductComment'; // Import the ProductComment component
 
 interface Props {
     products: Product[]; // Array of products passed as props to the component
-    addToCart: (product: Product) => void; // Add addToCart as a prop
+    addToCart: (product: Product) => void; // Function to add product to cart
 }
 
 const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
@@ -17,6 +18,9 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
     }
 
     const [currentImage, setCurrentImage] = useState(product.imageUrl[0]);
+
+    // Ensure price is a number
+    const price = typeof product.price === 'string' ? parseFloat(product.price) : product.price;
 
     return (
         <div className='my-20 w-full bg-white p-5'>
@@ -86,7 +90,9 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
                     {product.productDetails?.description && (
                         <p className='text-black'><span className='font-bold'>Description: </span>{product.productDetails.description}</p>
                     )}
-                    <p className="text-xl font-semibold text-green-600">${product.price.toFixed(2)}</p>
+
+                    {/* Display price safely */}
+                    <p className="text-xl font-semibold text-green-600">${price.toFixed(2)}</p>
 
                     {/* Add to Cart Button */}
                     <button

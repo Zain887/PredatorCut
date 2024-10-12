@@ -1,5 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+
+interface Comment {
+    id: string; // Adjust this based on your backend comment structure
+    user: string;
+    comment: string;
+    rating?: number;
+}
 
 interface Props {
     productId: string; // The productId will be passed as a prop to associate the comment with a specific product
@@ -11,15 +18,30 @@ const ProductComment: React.FC<Props> = ({ productId }) => {
     const [rating, setRating] = useState<number | undefined>(undefined); // State to hold the rating
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // State to track form submission status
     const [message, setMessage] = useState<string | null>(null); // Message for success or error feedback
+    const [comments, setComments] = useState<Comment[]>([]); // State to hold fetched comments
+
+    // Fetch comments when the component mounts
+    useEffect(() => {
+        const fetchComments = async () => {
+            const API_URL = import.meta.env.VITE_API_URL as string; // Add type assertion
+            if (!API_URL) {
+                console.error('API_URL is not defined');
+                return;
+            }
+            try {
+                const response = await axios.get(`${API_URL}/product-comment/${productId}`);
+                if (response.status === 200) {
+                    setComments(response.data); // Assuming the data is an array of comments
+                }
+            } catch (error) {
+                console.error('Error fetching comments:', error);
+            }
+        };
+
+        fetchComments();
+    }, [productId]); // Run the effect when productId changes
 
     const handleSubmit = async (e: React.FormEvent) => {
-        const API_URL = import.meta.env.VITE_API_URL as string; // Add type assertion
-        // Make sure to check if API_URL is defined
-        if (!API_URL) {
-            console.error('API_URL is not defined');
-            return;
-        }
-
         e.preventDefault();
         setIsSubmitting(true);
         setMessage(null); // Clear any previous message
@@ -33,7 +55,7 @@ const ProductComment: React.FC<Props> = ({ productId }) => {
         };
 
         try {
-            // Send a POST request to the backend to create the comment using axios
+            const API_URL = import.meta.env.VITE_API_URL as string; // Add type assertion
             const response = await axios.post(`${API_URL}/product-comment/${productId}`, newComment);
 
             if (response.status === 201 || response.status === 200) {
@@ -41,6 +63,7 @@ const ProductComment: React.FC<Props> = ({ productId }) => {
                 setUser(''); // Clear the form fields
                 setComment('');
                 setRating(undefined);
+                setComments((prevComments) => [...prevComments, { ...newComment, id: response.data.id }]); // Add the new comment to the list
             } else {
                 setMessage('Failed to submit comment. Please try again.');
             }
@@ -104,6 +127,24 @@ const ProductComment: React.FC<Props> = ({ productId }) => {
                 </button>
             </form>
             {message && <p className="mt-4 text-center text-red-500">{message}</p>}
+
+            {/* Display Comments Section */}
+            <h3 className="text-xl font-bold mt-6 text-black">Comments</h3>
+            <div className="mt-4">
+                {comments.length > 0 ? (
+                    comments.map((comment) => (
+                        <div key={comment.id} className="border-b mb-4 pb-2">
+                            <p className="font-semibold text-black">{comment.user}</p>
+                            <p className='text-black'>{comment.comment}</p>
+                            {comment.rating && (
+                                <p className="text-yellow-500">Rating: {comment.rating}</p>
+                            )}
+                        </div>
+                    ))
+                ) : (
+                    <p>No comments yet.</p>
+                )}
+            </div>
         </div>
     );
 };
