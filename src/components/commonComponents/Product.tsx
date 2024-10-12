@@ -18,15 +18,15 @@ const Product: React.FC<Props> = ({ id, name, description = "No description avai
   const displayedImageUrl = imageUrl.length > 0 ? imageUrl[0] : '/ImgPlaceholder.webp'; // Replace with actual placeholder path
   
   return (
-    <div className="p-4 border rounded-lg shadow-md">
+    <div className="p-4 border rounded-lg shadow-md bg-white">
       {/* Link to Product Details */}
-      <Link to={`/product/${id}`} className="block text-white">
+      <Link to={`/product/${id}`} className="block text-black">
         {/* Product Image */}
         <img src={displayedImageUrl} alt={name} className="w-full h-48 object-cover rounded-md mb-4" />
 
         {/* Product Name and Description */}
-        <h2 className="text-lg font-bold mb-2">{name}</h2>
-        <p className="text-gray-600 mb-4 text-sm">{description}</p>
+        <h2 className="text-lg font-bold mb-2 truncate">{name}</h2>
+        <p className="text-gray-600 mb-4 text-sm truncate">{description}</p>
 
         {/* Product Price and Quantity */}
         <div className="flex items-center justify-between mb-4">
@@ -50,8 +50,8 @@ const Product: React.FC<Props> = ({ id, name, description = "No description avai
       <div className='mt-4'>
         <button
           onClick={addToCart}
-          className='w-full bg-gray-400 text-[#242424] font-bold items-center justify-around flex'>
-          Add To Cart <FaCartArrowDown size={25} color='#242424' />
+          className='w-full bg-gray-400 text-[#242424] font-bold flex items-center justify-center p-2 rounded-md hover:bg-gray-500 transition-colors'>
+          Add To Cart <FaCartArrowDown size={25} color='#242424' className="ml-2" />
         </button>
       </div>
     </div>

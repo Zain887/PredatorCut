@@ -15,22 +15,22 @@ const SubCategoryList: React.FC<Props> = ({ categories, selectedCategoryId, onSe
     const filteredSubcategories = selectedCategory ? selectedCategory.subcategories : [];
 
     return (
-        <div className='p-5'>
-            <h2 className="text-2xl font-bold mb-4 text-center bg-white text-[#242424] border rounded-md">Subcategories</h2>
+        <div className='p-4 sm:p-5 md:p-6 lg:p-8'>
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 text-center bg-white text-[#242424] border rounded-md py-2">Subcategories</h2>
             {filteredSubcategories.length > 0 ? (
                 <ul className="space-y-4 rounded-md border border-white max-h-[600px] overflow-auto">
                     {filteredSubcategories.map((subcategory) => (
                         <li
                             key={subcategory.id}
-                            className="p-1 px-2 shadow hover:bg-gray-100 transition-colors hover:text-gray-700 cursor-pointer"
+                            className="p-2 shadow hover:bg-gray-100 transition-colors hover:text-gray-700 cursor-pointer"
                             onClick={() => onSelectProductType(subcategory.id)}  // Call onSelectProductType when clicked
                         >
-                            <h3 className="text-lg font-semibold">{subcategory.name}</h3>
+                            <h3 className="text-base sm:text-lg font-semibold">{subcategory.name}</h3>
                         </li>
                     ))}
                 </ul>
             ) : (
-                <p className="text-gray-600">No subcategories available for this category.</p>
+                <p className="text-gray-600 text-center">No subcategories available for this category.</p>
             )}
         </div>
     );

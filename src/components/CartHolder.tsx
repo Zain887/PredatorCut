@@ -22,31 +22,31 @@ const CartHolder: React.FC<Props> = ({ cart, removeFromCart }) => {
             ) : (
                 <ul className="space-y-4">
                     {cart.map((item) => (
-                        <li key={item.id} className="flex justify-between items-center p-4 border-b border-gray-200">
-                            <div>
-                                <h2 className="text-xl font-semibold text-black">{item.name}</h2>
-                                <p className="text-green-700 ">${typeof item.price === 'number' ? item.price.toFixed(2) : '0.00'}</p>
-                                <p className="text-gray-500">Quantity: {item.quantity || 1}</p>
+                        <li key={item.id} className="flex flex-col md:flex-row justify-between items-center p-4 border-b border-gray-200">
+                            <div className="flex-1 md:flex md:items-center">
+                                <img src={item.imageUrl[0]} alt={item.name} className="w-16 h-16 object-cover rounded mr-4 md:mr-6" />
+                                <div>
+                                    <h2 className="text-xl font-semibold text-black">{item.name}</h2>
+                                    <p className="text-green-700">${typeof item.price === 'number' ? item.price.toFixed(2) : '0.00'}</p>
+                                    <p className="text-gray-500">Quantity: {item.quantity || 1}</p>
+                                </div>
                             </div>
-                            <div className="flex items-center">
-                                <img src={item.imageUrl[0]} alt={item.name} className="w-16 h-16 object-cover rounded mr-4" />
-                                <button
-                                    onClick={() => removeFromCart(item.id)}
-                                    className="bg-red-500 text-white font-bold py-1 px-3 rounded hover:bg-red-600"
-                                >
-                                    Remove
-                                </button>
-                            </div>
+                            <button
+                                onClick={() => removeFromCart(item.id)}
+                                className="mt-2 md:mt-0 bg-red-500 text-white font-bold py-1 px-3 rounded hover:bg-red-600"
+                            >
+                                Remove
+                            </button>
                         </li>
                     ))}
                 </ul>
             )}
             {cart.length > 0 && (
-                <div className="mt-6 flex justify-between items-center">
-                    <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600">
+                <div className="mt-6 flex flex-col md:flex-row justify-between items-center">
+                    <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 w-full md:w-auto">
                         Proceed to Checkout
                     </button>
-                    <p className="text-xl font-bold text-red-500">Total: ${totalAmount}</p>
+                    <p className="text-xl font-bold text-red-500 mt-2 md:mt-0">Total: ${totalAmount}</p>
                 </div>
             )}
         </div>

@@ -24,20 +24,22 @@ const Tracer: React.FC<Props> = () => {
     };
 
     return (
-        <div className="flex mt-5 mb-16 justify-evenly">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5 mb-16">
             {positions.map((position, index) => (
                 <img
                     key={index}
                     src={`/tracerImage/frame${index + 1}.png`}
                     alt="predator Cut"
-                    className="w-auto h-80 cursor-pointer duration-700 relative"
+                    className="w-full h-auto sm:h-60 md:h-80 cursor-pointer duration-700 relative m-auto"
                     style={{
                         transform: `translate(${position.x * 20}px, ${position.y * 20}px)`,
+                        maxWidth: '300px', // Set a max width for larger screens
                     }}
                     onMouseMove={(event) => handleMouseMove(index, event)}
                 />
             ))}
         </div>
+
     );
 };
 

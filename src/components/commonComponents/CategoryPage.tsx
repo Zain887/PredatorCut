@@ -30,6 +30,7 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, categor
     const handleSelectSubcategory = (subcategoryId: string) => {
         setSelectedSubcategoryId(subcategoryId);
     }
+
     // Function to show popup notification
     const showPopup = (message: string) => {
         setPopupMessage(message);
@@ -60,7 +61,7 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, categor
                         alt={matchedHeaderImage.article}
                         className="w-full max-h-[760px] object-cover"
                     />
-                    <h1 className="text-6xl font-bold text-center my-4 bg-gradient-to-b from-[#666666] to-white text-transparent bg-clip-text">
+                    <h1 className="text-4xl md:text-6xl font-bold text-center my-4 bg-gradient-to-b from-[#666666] to-white text-transparent bg-clip-text">
                         {matchedHeaderImage.article}
                     </h1>
                 </div>
@@ -71,8 +72,8 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, categor
             {/* Display Hot Selling Products */}
             {hotSellingProducts.length > 0 && (
                 <div className='m-5 p-5 box-border rounded-lg shadow-md shadow-yellow-50 border border-white'>
-                    <h2 className="text-2xl font-bold mb-4 text-center capitalize bg-white text-[#242424] rounded-md">Hot Sales Items</h2>
-                    <div className="grid grid-cols-5 gap-4 h-[480px] overflow-y-auto">
+                    <h2 className="text-xl md:text-2xl font-bold mb-4 text-center capitalize bg-white text-[#242424] rounded-md">Hot Sales Items</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 h-[480px] overflow-y-auto">
                         {hotSellingProducts.map(product => (
                             <Product
                                 key={product.id}
@@ -94,17 +95,17 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, categor
             )}
 
             {/* Subcategory and Product List */}
-            <div className='p-5 flex'>
-                <div className='w-[20%]'>
+            <div className='p-5 flex flex-col md:flex-row'>
+                <div className='w-full md:w-[20%] mb-4 md:mb-0'>
                     <SubCategoryList
                         categories={categories} // Use the categories prop
                         selectedCategoryId={selectedCategory.id}
                         onSelectProductType={handleSelectSubcategory}
                     />
                 </div>
-                <div className='w-[80%] p-5'>
-                    <h2 className="text-2xl font-bold mb-4 text-center bg-white text-[#242424] border rounded-md">Products</h2>
-                    <div className="grid grid-cols-4 gap-4">
+                <div className='w-full md:w-[80%] p-5'>
+                    <h2 className="text-xl md:text-2xl font-bold mb-4 text-center bg-white text-[#242424] border rounded-md">Products</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {filteredProducts.length > 0 ? (
                             filteredProducts.map(product => (
                                 <Product
@@ -123,7 +124,7 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, categor
                                 />
                             ))
                         ) : (
-                            <p>No products available for this type.</p>
+                            <p className="col-span-full text-center">No products available for this type.</p>
                         )}
                     </div>
                     {popupVisible && <PopUp message={popupMessage} onClose={() => setPopupVisible(false)} />}
