@@ -8,7 +8,11 @@ interface Props {
 
 const CartHolder: React.FC<Props> = ({ cart, removeFromCart }) => {
     // Calculate total amount
-    const totalAmount = cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+    const totalAmount = cart.reduce((total, item) => {
+        const price = typeof item.price === 'number' ? item.price : 0; // Ensure price is a number
+        const quantity = item.quantity || 1; // Default quantity to 1 if undefined
+        return total + price * quantity;
+    }, 0).toFixed(2);
 
     return (
         <div className="my-20 mt-[72px] max-w-4xl mx-auto p-5 bg-white shadow-lg rounded-lg">
@@ -21,8 +25,8 @@ const CartHolder: React.FC<Props> = ({ cart, removeFromCart }) => {
                         <li key={item.id} className="flex justify-between items-center p-4 border-b border-gray-200">
                             <div>
                                 <h2 className="text-xl font-semibold text-black">{item.name}</h2>
-                                <p className="text-green-700 ">${item.price.toFixed(2)}</p>
-                                <p className="text-gray-500">Quantity: {item.quantity}</p>
+                                <p className="text-green-700 ">${typeof item.price === 'number' ? item.price.toFixed(2) : '0.00'}</p>
+                                <p className="text-gray-500">Quantity: {item.quantity || 1}</p>
                             </div>
                             <div className="flex items-center">
                                 <img src={item.imageUrl[0]} alt={item.name} className="w-16 h-16 object-cover rounded mr-4" />

@@ -25,8 +25,8 @@ const Product: React.FC<Props> = ({ id, name, description = "No description avai
         <img src={displayedImageUrl} alt={name} className="w-full h-48 object-cover rounded-md mb-4" />
 
         {/* Product Name and Description */}
-        <h2 className="text-2xl font-bold mb-2">{name}</h2>
-        <p className="text-gray-600 mb-4">{description}</p>
+        <h2 className="text-lg font-bold mb-2">{name}</h2>
+        <p className="text-gray-600 mb-4 text-sm">{description}</p>
 
         {/* Product Price and Quantity */}
         <div className="flex items-center justify-between mb-4">

@@ -27,11 +27,11 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
             <h1 className='text-center py-20 bg-gradient-to-b from-[#666666] to-white text-transparent bg-clip-text font-bold uppercase'>
                 Product Details
             </h1>
-            <div className="flex flex-col md:flex-row w-full max-w-6xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
+            <div className="flex flex-col md:flex-row w-full min-w-6xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
                 {/* Left Section: Images */}
                 <div className="w-full md:w-1/2 p-4 flex flex-col items-center">
                     {/* Large Image */}
-                    <div className="w-96 h-96 mb-4 flex">
+                    <div className="w-[30vw] h-auto mb-4 flex">
                         <img src={currentImage} alt={product.name} className="w-full h-auto object-cover rounded-lg" />
                     </div>
 
@@ -48,7 +48,6 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
                         ))}
                     </div>
                 </div>
-
                 {/* Right Section: Details */}
                 <div className="w-full md:w-1/2 p-6 flex flex-col justify-center space-y-4">
                     <h1 className="text-2xl font-bold mb-2 text-black">{product.name}</h1>
@@ -68,7 +67,7 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
 
                     {/* Product Details */}
                     {product.productDetails?.bladeLength && (
-                        <p className='text-black'><span className='font-bold'>Blade Length: </span>{product.productDetails.bladeLength}</p>
+                        <p className='text-black'><span className='font-bold'>Blade Length: </span>{product.productDetails.bladeLength}"</p>
                     )}
 
                     {product.productDetails?.bladeMaterial && (
@@ -76,7 +75,7 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
                     )}
 
                     {product.productDetails?.handleLength && (
-                        <p className='text-black'><span className='font-bold'>Handle Length: </span>{product.productDetails.handleLength}</p>
+                        <p className='text-black'><span className='font-bold'>Handle Length: </span>{product.productDetails.handleLength}"</p>
                     )}
 
                     {product.productDetails?.handleMaterial && (
@@ -84,11 +83,7 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
                     )}
 
                     {product.productDetails?.totalLength && (
-                        <p className='text-black'><span className='font-bold'>Total Length: </span>{product.productDetails.totalLength}</p>
-                    )}
-
-                    {product.productDetails?.description && (
-                        <p className='text-black'><span className='font-bold'>Description: </span>{product.productDetails.description}</p>
+                        <p className='text-black'><span className='font-bold'>Total Length: </span>{product.productDetails.totalLength}"</p>
                     )}
 
                     {/* Display price safely */}
@@ -103,6 +98,11 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
                         Add to Cart
                     </button>
                 </div>
+            </div>
+            <div className='my-20'>
+                {product.productDetails?.description && (
+                    <p className='text-black text-center'><span className='font-bold text-2xl'>Description </span> <br /> {product.productDetails.description}</p>
+                )}
             </div>
 
             {/* Comments Section */}

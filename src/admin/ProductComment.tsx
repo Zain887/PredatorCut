@@ -75,32 +75,53 @@ const ProductComment: React.FC<Props> = ({ productId }) => {
     };
 
     return (
-        <div className="w-full mx-auto p-4 border rounded shadow-md bg-white">
+
+        <div className="w-full mx-auto p-4 bg-white">
+            {/* Display Comments Section */}
+            <h3 className="text-xl font-bold mt-6 text-black">Comments</h3>
+            <div className="mt-4">
+                {comments.length > 0 ? (
+                    comments.map((comment) => (
+                        <div key={comment.id} className="border-b mb-4 pb-2">
+                            <div className='flex justify-between border-b mb-5'>
+                                <p className="font-semibold text-black">{comment.user}</p>
+                                {comment.rating && (
+                                    <p className="text-yellow-500">Rating: {comment.rating} Start</p>
+                                )}
+                            </div>
+                            <p className='text-black'>{comment.comment}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p>No comments yet.</p>
+                )}
+            </div>
             <h2 className="text-2xl font-bold mb-4 text-black text-center">Leave a Comment</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="bg-gray-50 p-6 rounded-lg shadow-md">
                 <div className="mb-4">
-                    <label htmlFor="user" className="block text-sm font-medium text-gray-700">Name:</label>
+                    <label htmlFor="user" className="block text-sm font-semibold text-gray-800">Name:</label>
                     <input
                         type="text"
                         id="user"
                         value={user}
                         onChange={(e) => setUser(e.target.value)}
                         required
-                        className="mt-1 block w-full p-2 bg-white text-black border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+                        className="mt-1 block w-full p-3 bg-white text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 ease-in-out"
                     />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="comment" className="block text-sm font-medium text-gray-700">Comment:</label>
+                    <label htmlFor="comment" className="block text-sm font-semibold text-gray-800">Comment:</label>
                     <textarea
                         id="comment"
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
                         required
-                        className="mt-1 block w-full p-2 border bg-white text-black border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+                        className="mt-1 block w-full p-3 border bg-white text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 ease-in-out"
+                        rows={4}
                     />
                 </div>
                 <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">Rating (optional):</label>
+                    <label className="block text-sm font-semibold text-gray-800">Rating (optional):</label>
                     <div className="flex items-center mt-1">
                         {[1, 2, 3, 4, 5].map((star) => (
                             <svg
@@ -109,7 +130,7 @@ const ProductComment: React.FC<Props> = ({ productId }) => {
                                 onMouseEnter={() => setRating(star)} // Optional: change color on hover
                                 onMouseLeave={() => setRating(rating)} // Reset color on mouse leave
                                 xmlns="http://www.w3.org/2000/svg"
-                                className={`h-6 w-6 cursor-pointer ${rating && rating >= star ? 'text-yellow-400' : 'text-gray-300'}`}
+                                className={`h-8 w-8 cursor-pointer transition duration-200 ease-in-out ${rating && rating >= star ? 'text-yellow-500' : 'text-gray-300 hover:text-yellow-400'}`}
                                 fill="currentColor"
                                 viewBox="0 0 24 24"
                             >
@@ -121,30 +142,13 @@ const ProductComment: React.FC<Props> = ({ productId }) => {
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-full p-2 text-white font-bold rounded-md ${isSubmitting ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'}`}
+                    className={`w-full p-3 text-white font-bold rounded-md transition duration-200 ease-in-out ${isSubmitting ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50'}`}
                 >
                     {isSubmitting ? 'Submitting...' : 'Submit Comment'}
                 </button>
             </form>
-            {message && <p className="mt-4 text-center text-red-500">{message}</p>}
 
-            {/* Display Comments Section */}
-            <h3 className="text-xl font-bold mt-6 text-black">Comments</h3>
-            <div className="mt-4">
-                {comments.length > 0 ? (
-                    comments.map((comment) => (
-                        <div key={comment.id} className="border-b mb-4 pb-2">
-                            <p className="font-semibold text-black">{comment.user}</p>
-                            <p className='text-black'>{comment.comment}</p>
-                            {comment.rating && (
-                                <p className="text-yellow-500">Rating: {comment.rating}</p>
-                            )}
-                        </div>
-                    ))
-                ) : (
-                    <p>No comments yet.</p>
-                )}
-            </div>
+            {message && <p className="mt-4 text-center text-red-500">{message}</p>}
         </div>
     );
 };
