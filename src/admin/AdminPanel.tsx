@@ -5,6 +5,8 @@ import { Category, HeaderImages, Subcategory, Product } from '../types';
 import CategoryForm from './CategoryForm';
 import ProductTypeForm from './ProductTypeForm';
 import ProductForm from './ProductForm';
+import { MdDelete, MdModeEdit } from "react-icons/md";
+
 
 const AdminPanel: React.FC = () => {
     const [headerImage, setHeaderImage] = useState<HeaderImages[]>([]);
@@ -13,6 +15,7 @@ const AdminPanel: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeComponent, setActiveComponent] = useState<'headerImage' | 'category' | 'productType' | 'product'>('headerImage');
+    const [activeSubComponent, SetActiveSubComponent] = useState<'new' | 'list'>('new');
 
     const API_URL = import.meta.env.VITE_API_URL as string;
 
@@ -84,6 +87,15 @@ const AdminPanel: React.FC = () => {
         }
     };
 
+    const deleteProduct = async (id: string) => {
+        try {
+            await axios.delete(`${API_URL}/product/${id}`);
+            setProducts(prevProduct => prevProduct.filter(product => product.id !== id));
+        } catch (error) {
+            console.error('Error deleting product type:', error);
+        }
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             await Promise.all([
@@ -104,7 +116,7 @@ const AdminPanel: React.FC = () => {
 
     return (
         <>
-            <h1 className="text-white font-extrabold text-4xl text-center md:w-full">Admin Panel</h1>
+            <h1 className="text-white font-extrabold text-4xl text-center md:w-full mt-16">Admin Panel</h1>
             <div className="flex flex-col md:flex-row py-20">
                 <div className="md:w-1/4 bg-gray-200 md:rounded-md p-5">
                     <ul className="grid grid-cols-2 md:grid-cols-1 gap-2">
@@ -145,133 +157,175 @@ const AdminPanel: React.FC = () => {
                 <div className="md:w-3/4 w-full border border-white rounded-md m-auto p-5 bg-white">
                     {/* Render Active Component */}
                     {activeComponent === 'headerImage' && (
-                        <div className="flex flex-col md:flex-row items-center justify-evenly mt-5">
-                            <div className="w-full md:w-1/2">
-                                <HeaderImageForm />
-                            </div>
-                            <div className="w-full md:w-1/2 overflow-x-auto">
-                                <table className="min-w-full text-left bg-white rounded-lg shadow-md">
-                                    <thead className="bg-gray-200 text-black font-bold">
-                                        <tr>
-                                            <th className="border-b px-4 py-2">Title</th>
-                                            <th className="border-b px-4 py-2">Image</th>
-                                            <th className="border-b px-4 py-2">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {headerImage.map(image => (
-                                            <tr key={image.id} className="hover:bg-gray-100">
-                                                <td className="border-b px-4 py-2 text-black">{image.article}</td>
-                                                <td className="border-b px-4 py-2">
-                                                    <img
-                                                        src={`${API_URL}${image.url}`}
-                                                        alt={image.article}
-                                                        className="w-auto h-20 object-cover rounded"
-                                                    />
-                                                </td>
-                                                <td className="border-b px-4 py-2">
-                                                    <button
-                                                        onClick={() => deleteHeaderImage(image.id)}
-                                                        className="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-700"
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    )}
-                    {activeComponent === 'category' && (
-                        <div className="flex flex-col md:flex-row items-center justify-evenly mt-5">
-                            <div className="w-full md:w-1/2 mb-5 md:mb-0">
-                                <CategoryForm />
-                            </div>
-                            <div className="w-full md:w-1/2 overflow-x-auto">
-                                <table className="min-w-full text-left bg-white rounded-lg shadow-md">
-                                    <thead className="bg-gray-200 text-black font-bold">
-                                        <tr>
-                                            <th className="border-b px-4 py-2">Categories</th>
-                                            <th className="border-b px-4 py-2">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {categories.map(data => (
-                                            <tr key={data.id} className="hover:bg-gray-100">
-                                                <td className="border-b px-4 py-2 text-black">{data.name}</td>
-                                                <td className="border-b px-4 py-2">
-                                                    <button
-                                                        onClick={() => deleteCategory(data.id)}
-                                                        className="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-700"
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    )}
-                    {activeComponent === 'productType' && (
                         <>
-                            <div className="flex flex-col md:flex-row items-start md:items-center justify-evenly">
-                                <ProductTypeForm />
-                                <div className="w-full mt-4 md:mt-0">
-                                    <div className="overflow-x-auto">
-                                        <table className="min-w-full text-left">
-                                            <thead className="text-black font-bold">
+                            <div className='flex w-full'>
+                                <button onClick={() => SetActiveSubComponent('new')} className={`w-full p-3 text-center border-blue-500 ${activeSubComponent === 'new' ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}>Add New HeaderImage</button>
+                                <button onClick={() => SetActiveSubComponent('list')} className={`w-full p-3 text-center border-blue-500 ${activeSubComponent === 'list' ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}>HeaderImage List</button>
+                            </div>
+                            <div className="flex flex-col md:flex-row items-center justify-evenly mt-5">
+                                {activeSubComponent === "new" && (
+                                    <div className="w-full">
+                                        <HeaderImageForm />
+                                    </div>
+                                )}
+                                {activeSubComponent === 'list' && (
+                                    <div className="w-full overflow-x-auto">
+                                        <table className="min-w-full text-left bg-white rounded-lg shadow-md">
+                                            <thead className="bg-gray-200 text-black font-bold">
                                                 <tr>
-                                                    <th className="border-b px-4 py-2">Product Types</th>
-                                                    <th className="border-b px-4 py-2">Action</th>
+                                                    <th className="border-b px-4 py-2">Title</th>
+                                                    <th className="border-b px-4 py-2">Image</th>
+                                                    <th className="border-b px-4 py-2">Delete</th>
+                                                    <th className="border-b px-4 py-2">Edit</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {productType.map(data => (
-                                                    <tr key={data.id}>
-                                                        <td className="border-b px-4 py-2 text-black">{data.name}</td>
+                                                {headerImage.map(image => (
+                                                    <tr key={image.id} className="hover:bg-gray-100">
+                                                        <td className="border-b px-4 py-2 text-black">{image.article}</td>
                                                         <td className="border-b px-4 py-2">
-                                                            <button onClick={() => deleteProductType(data.id)} className="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-700">
-                                                                Delete
-                                                            </button>
+                                                            <img
+                                                                src={`${API_URL}${image.url}`}
+                                                                alt={image.article}
+                                                                className="w-auto h-20 object-cover rounded"
+                                                            />
+                                                        </td>
+                                                        <td className="border-b px-4 py-2">
+                                                            <MdDelete size={30} color='red' onClick={() => deleteHeaderImage(image.id)} />
+                                                        </td>
+                                                        <td className="border-b px-4 py-2">
+                                                            <MdModeEdit size={30} color='green' onClick={() => { }} />
                                                         </td>
                                                     </tr>
                                                 ))}
                                             </tbody>
                                         </table>
                                     </div>
-                                </div>
+                                )}
                             </div>
-                            <hr />
+                        </>
+                    )}
+                    {activeComponent === 'category' && (
+                        <>
+                            <div className='flex w-full'>
+                                <button onClick={() => SetActiveSubComponent('new')} className={`w-full p-3 text-center border-blue-500 ${activeSubComponent === 'new' ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}>Add New Category</button>
+                                <button onClick={() => SetActiveSubComponent('list')} className={`w-full p-3 text-center border-blue-500 ${activeSubComponent === 'list' ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}>Category List</button>
+                            </div>
+                            <div className="flex flex-col md:flex-row items-center justify-evenly mt-5">
+                                {activeSubComponent === "new" && (
+
+                                    <div className="w-full mb-5 md:mb-0">
+                                        <CategoryForm />
+                                    </div>
+                                )}
+                                {activeSubComponent === "list" && (
+
+                                    <div className="w-full overflow-x-auto">
+                                        <table className="min-w-full text-left bg-white rounded-lg shadow-md">
+                                            <thead className="bg-gray-200 text-black font-bold">
+                                                <tr>
+                                                    <th className="border-b px-4 py-2">Categories</th>
+                                                    <th className="border-b px-4 py-2">Delete</th>
+                                                    <th className="border-b px-4 py-2">Edit</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {categories.map(data => (
+                                                    <tr key={data.id} className="hover:bg-gray-100">
+                                                        <td className="border-b px-4 py-2 text-black">{data.name}</td>
+                                                        <td className="border-b px-4 py-2">
+                                                            <MdDelete size={30} color='red' onClick={() => deleteCategory(data.id)} />
+                                                        </td>
+                                                        <td className="border-b px-4 py-2">
+                                                            <MdModeEdit size={30} color='green' onClick={() => { }} />
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                            </div>
+                        </>
+                    )}
+                    {activeComponent === 'productType' && (
+                        <>
+                            <div className='flex w-full'>
+                                <button onClick={() => SetActiveSubComponent('new')} className={`w-full p-3 text-center border-blue-500 ${activeSubComponent === 'new' ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}>Add New ProductType</button>
+                                <button onClick={() => SetActiveSubComponent('list')} className={`w-full p-3 text-center border-blue-500 ${activeSubComponent === 'list' ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}>ProductType List</button>
+                            </div>
+                            <div className="flex flex-col md:flex-row items-start md:items-center justify-evenly">
+                                {activeSubComponent === "new" && (
+                                    <ProductTypeForm />
+                                )}
+                                {activeSubComponent === "list" && (
+                                    <div className="w-full mt-4 md:mt-0">
+                                        <div className="overflow-x-auto">
+                                            <table className="min-w-full text-left">
+                                                <thead className="bg-gray-200 text-black font-bold">
+                                                    <tr>
+                                                        <th className="border-b px-4 py-2">Product Types</th>
+                                                        <th className="border-b px-4 py-2">Delete</th>
+                                                        <th className="border-b px-4 py-2">Edit</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {productType.map(data => (
+                                                        <tr key={data.id}>
+                                                            <td className="border-b px-4 py-2 text-black">{data.name}</td>
+                                                            <td className="border-b px-4 py-2">
+                                                                <MdDelete size={30} color='red' onClick={() => deleteProductType(data.id)} />
+                                                            </td>
+                                                            <td className="border-b px-4 py-2">
+                                                                <MdModeEdit size={30} color='green' onClick={() => { }} />
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </>
                     )}
                     {activeComponent === 'product' && (
                         <>
-                            <h2 className="text-black font-bold text-xl">Products</h2>
-                            <div className="overflow-x-auto">
-                                <table className="min-w-full text-left">
-                                    <thead className="text-black font-bold">
-                                        <tr>
-                                            <th className="border-b px-4 py-2">Product Name</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {products.map(product => (
-                                            <tr key={product.id}>
-                                                <td className="border-b px-4 py-2 text-black">{product.name}</td>
+                            <div className='flex w-full'>
+                                <button onClick={() => SetActiveSubComponent('new')} className={`w-full p-3 text-center border-blue-500 ${activeSubComponent === 'new' ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}>Add New ProductType</button>
+                                <button onClick={() => SetActiveSubComponent('list')} className={`w-full p-3 text-center border-blue-500 ${activeSubComponent === 'list' ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}>ProductType List</button>
+                            </div>
+                            {activeSubComponent === "list" && (
+                                <div className="overflow-x-auto">
+                                    <table className="min-w-full text-left">
+                                        <thead className="bg-gray-200 text-black font-bold">
+                                            <tr>
+                                                <th className="border-b px-4 py-2">Product Name</th>
+                                                <th className="border-b px-4 py-2">Delete</th>
+                                                <th className="border-b px-4 py-2">Edit</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <hr />
-                            {/* Product Form Section */}
-                            <div className="mt-5">
-                                <ProductForm />
-                            </div>
+                                        </thead>
+                                        <tbody>
+                                            {products.map(product => (
+                                                <tr key={product.id}>
+                                                    <td className="border-b px-4 py-2 text-black">{product.name}</td>
+                                                    <td className="border-b px-4 py-2">
+                                                        <MdDelete size={30} color='red' onClick={() => deleteProduct(product.id)} />
+                                                    </td>
+                                                    <td className="border-b px-4 py-2">
+                                                        <MdModeEdit size={30} color='green' onClick={() => { }} />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+                            {activeSubComponent === "new" && (
+                                <div className="mt-5">
+                                    <ProductForm />
+                                </div>
+                            )}
                         </>
                     )}
 

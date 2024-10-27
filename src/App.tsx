@@ -1,4 +1,3 @@
-// App.tsx
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
@@ -9,88 +8,163 @@ import CategoryPage from './components/commonComponents/CategoryPage';
 import LandingPage from './pages/LandingPage';
 import CartHolder from './components/CartHolder';
 import ProductDetails from './components/ProductDetails';
-import { Category, HeaderImages, Product } from './types'; // Ensure the correct import for Product
+import { CartItem, Category, HeaderImages, Product } from './types';
 import AdminPanel from './admin/AdminPanel';
 import ErrorBoundary from './ErrorBoundry';
 import axios from 'axios';
+import Login from './admin/Login';
+import Register from './admin/Register';
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const [cart, setCart] = useState<Product[]>([]); // Initialize cart state
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [headerImage, setHeaderImage] = useState<HeaderImages[]>([]);
-  const API_URL = import.meta.env.VITE_API_URL as string; // Make sure the API URL is properly defined
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return !!localStorage.getItem('token'); // Check if token exists
+  });
 
+  const API_URL = import.meta.env.VITE_API_URL as string;
+
+  // Function to fetch cart data
+  const fetchCartData = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        try {
+            const response = await axios.get(`${API_URL}/cart`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setCart(response.data.items || []); // Update cart state with fetched items
+        } catch (error) {
+            handleAxiosError(error, 'Error fetching cart data');
+        }
+    }
+};
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
+    const fetchData = async () => {
+      await Promise.all([fetchCategories(), fetchHeaderImages()]);
+      // Check login status on component mount
+      const token = localStorage.getItem('token');
+      if (token) {
+        setIsLoggedIn(true);
+        await fetchCartData(); // Fetch cart data if logged in
+      }
+    };
 
-    return () => clearTimeout(timeout);
-  }, []);
-
-  useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get<Category[]>(`${API_URL}/category`);
         setCategories(response.data);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
+      } catch (error: unknown) {
+        handleAxiosError(error, 'Error fetching categories');
       }
     };
 
     const fetchHeaderImages = async () => {
       try {
         const response = await axios.get<HeaderImages[]>(`${API_URL}/header-images`);
-        if (response.status === 200) {
-          const updatedImages = response.data.map(image => ({
-            ...image,
-            url: `${API_URL}${image.url}`, // Make sure this path is correct
-          }));
-          setHeaderImage(updatedImages);
-        } else {
-          console.error('Failed to fetch header images:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error fetching header images:', error);
+        setHeaderImage(response.data.map(image => ({
+          ...image,
+          url: `${API_URL}${image.url}`,
+        })));
+      } catch (error: unknown) {
+        handleAxiosError(error, 'Error fetching header images');
       }
     };
 
-    fetchHeaderImages();
-    fetchCategories();
-  }, [])
+    fetchData().then(() => setLoading(false));
+  }, [API_URL]);
 
-  // Combine all products from all categories and subcategories
+  // Fetch cart data whenever the user logs in
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchCartData(); // Fetch cart data if logged in
+    }
+  }, [isLoggedIn]);
+
+  const handleAxiosError = (error: unknown, context: string) => {
+    if (axios.isAxiosError(error)) {
+      console.error(`${context}:`, error.response?.data || error.message);
+    } else if (error instanceof Error) {
+      console.error(`${context}:`, error.message);
+    } else {
+      console.error(`${context}:`, error);
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true); // Update login state
+      fetchCartData(); // Fetch cart data on login success
+    }
+  };
+
   const allProducts = categories.flatMap(category =>
     category.subcategories.flatMap(subcategory => subcategory.products)
   );
 
-  const addToCart = (product: Product) => {
-    const existingProduct = cart.find(item => item.id === product.id);
-    if (existingProduct) {
-      // Update the quantity if it exists
-      setCart(cart.map(item =>
-        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-      ));
-    } else {
-      setCart((prevCart) => [...prevCart, { ...product, quantity: 1 }]);
+  const addToCart = async (product: Product) => {
+    if (!isLoggedIn) {
+      alert('You need to log in to add items to your cart.'); // Inform user to log in
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    try {
+      const response = await axios.post(
+        `${API_URL}/cart/add/${product.id}`,
+        { quantity: 1 },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Update the local cart state immediately
+      if (response.status === 200) {
+        setCart(response.data.items); // Update cart state immediately after adding
+      }
+    } catch (error) {
+      handleAxiosError(error, 'Error adding to cart');
     }
   };
 
-  const removeFromCart = (id: string) => {
-    setCart(prevCart => {
-      const existingProduct = prevCart.find(item => item.id === id);
-      if (existingProduct && existingProduct.quantity > 1) {
-        // Decrease quantity if more than 1
-        return prevCart.map(item =>
-          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-        );
-      } else {
-        // Remove the product if quantity is 1 or it doesn't exist
-        return prevCart.filter(item => item.id !== id);
+  const removeFromCart = async (productId: string) => {
+    const token = localStorage.getItem('token');
+    if (!productId) {
+      console.error('Product ID is missing');
+      return;
+    }
+
+    try {
+      const response = await axios.delete(`${API_URL}/cart/remove/${productId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Update the local cart state immediately
+      if (response.status === 200 && response.data.items) {
+        setCart(response.data.items); // Update cart state after removal
       }
-    });
+    } catch (error) {
+      handleAxiosError(error, 'Error removing from cart');
+    }
+  };
+
+  const updateQuantity = async (productId: string, newQuantity: number) => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await axios.patch(
+        `${API_URL}/cart/update-quantity/${productId}`,
+        { quantity: newQuantity },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Update the local cart state immediately
+      if (response.status === 200) {
+        setCart(response.data.items); // Update cart state with new quantities
+      }
+    } catch (error) {
+      handleAxiosError(error, 'Error updating quantity');
+    }
   };
 
   return (
@@ -107,14 +181,46 @@ function App() {
                 <Route
                   key={category.id}
                   path={`/${category.name}`}
-                  element={<CategoryPage addToCart={addToCart} selectedCategory={category} headerImages={headerImage}
-                    categories={categories} />}
+                  element={
+                    <CategoryPage
+                      addToCart={addToCart}
+                      selectedCategory={category}
+                      headerImages={headerImage}
+                      categories={categories}
+                      isLoggedIn={isLoggedIn}
+                    />
+                  }
                 />
               ))}
               <Route path="*" element={<Navigate to="/" />} />
-              <Route path="/cart" element={<CartHolder cart={cart} removeFromCart={removeFromCart} />} />
-              <Route path="/product/:id" element={<ProductDetails products={allProducts} addToCart={addToCart} />} />
-              <Route path='/admin' element={< AdminPanel />} />
+              <Route
+                path="/cart"
+                element={
+                  <CartHolder
+                    cart={cart}
+                    removeFromCart={removeFromCart}
+                    updateQuantity={updateQuantity} // Pass updateQuantity to CartHolder
+                    fetchCartData={fetchCartData} // Pass fetchCartData as a prop
+
+                  />
+                }
+              />
+              <Route
+                path="/product/:id"
+                element={
+                  <ProductDetails
+                    products={allProducts}
+                    addToCart={addToCart}
+                    isLoggedIn={isLoggedIn}
+                  />
+                }
+              />
+              <Route path='/admin' element={<AdminPanel />} />
+              <Route
+                path="/login"
+                element={isLoggedIn ? <Navigate to="/" /> : <Login onLoginSuccess={handleLoginSuccess} />}
+              />
+              <Route path="/register" element={isLoggedIn ? <Navigate to="/" /> : <Register />} />
             </Routes>
             <Footer categories={categories} />
           </div>

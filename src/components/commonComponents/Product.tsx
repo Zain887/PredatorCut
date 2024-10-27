@@ -1,22 +1,46 @@
 import React from 'react';
 import { FaCartArrowDown } from "react-icons/fa6";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
+// Define the Props interface
 interface Props {
-  id: string; // Added the id prop
-  name: string;
-  description?: string;
-  price: number;
-  imageUrl: string[];
-  quantity: number;
-  tag?: string[];
-  addToCart: () => void; // AddToCart function as prop
+  id: string; // Product ID
+  name: string; // Product name
+  description?: string; // Product description
+  price: number; // Product price
+  imageUrl: string[]; // Array of image URLs
+  quantity: number; // Product quantity
+  tag?: string[]; // Array of tags
+  addToCart: (productId: string, userId: string) => void; // Function to add to cart
+  isLoggedIn: boolean; // Indicates if the user is logged in
+  userId: string; // User ID for the logged-in user
 }
 
-const Product: React.FC<Props> = ({ id, name, description = "No description available", price, imageUrl = [], quantity, tag = [], addToCart }) => {
+// Define the Product component
+const Product: React.FC<Props> = ({
+  id,
+  name,
+  description = "No description available",
+  price,
+  imageUrl = [],
+  quantity,
+  tag = [],
+  addToCart,
+  isLoggedIn,
+  userId,
+}) => {
+  const navigate = useNavigate(); // Hook for navigation
+  const displayedImageUrl = imageUrl.length > 0 ? imageUrl[0] : '/ImgPlaceholder.webp'; // Placeholder for image
 
-  const displayedImageUrl = imageUrl.length > 0 ? imageUrl[0] : '/ImgPlaceholder.webp'; // Replace with actual placeholder path
-  
+  // Handle add to cart action
+  const handleAddToCart = () => {
+    if (isLoggedIn) {
+      addToCart(id, userId); // Pass product ID and user ID to addToCart
+    } else {
+      navigate('/login'); // Redirect to login if not logged in
+    }
+  };
+
   return (
     <div className="p-4 border rounded-lg shadow-md bg-white">
       {/* Link to Product Details */}
@@ -49,8 +73,9 @@ const Product: React.FC<Props> = ({ id, name, description = "No description avai
       {/* Add to Cart Button */}
       <div className='mt-4'>
         <button
-          onClick={addToCart}
-          className='w-full bg-gray-400 text-[#242424] font-bold flex items-center justify-center p-2 rounded-md hover:bg-gray-500 transition-colors'>
+          onClick={handleAddToCart}
+          className={`w-full ${isLoggedIn ? 'bg-gray-400' : 'bg-gray-300 cursor-pointer'} text-[#242424] font-bold flex items-center justify-center p-2 rounded-md hover:bg-gray-500 transition-colors`}
+        >
           Add To Cart <FaCartArrowDown size={25} color='#242424' className="ml-2" />
         </button>
       </div>

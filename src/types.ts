@@ -14,7 +14,7 @@ export interface Subcategory {
   id: string;
   name: string;
   categoryId: string;
-  products:Product[];
+  products: Product[];
 }
 
 export interface Product {
@@ -24,7 +24,7 @@ export interface Product {
   price: number;
   imageUrl: string[];
   productDetails?: ProductDetails;
-  quantity: number;
+  quantity: number; // Assuming this is for inventory tracking
   tag?: string[];
   subcategoryId?: string;
   comments?: ProductComment[];
@@ -46,17 +46,17 @@ export interface ProductComment {
   rating?: number;
 }
 
+// Updated CartItem interface
 export interface CartItem {
-  productId: string;
-  name: string;
-  price: number;
-  quantity: number;
-  imageUrl: string;
-  total: number;
+  userId: string;
+  product: Product; // Reference to the Product
+  quantity: number; // Quantity of the product in the cart
+  total: number; // Total price for this cart item (price * quantity)
 }
 
+// Updated Cart interface
 export interface Cart {
-  items: CartItem[];
-  totalQuantity: number;
-  totalPrice: number;
+  items: CartItem[]; // Array of CartItem
+  totalQuantity: number; // Total number of items in the cart
+  totalPrice: number; // Total price of all items in the cart
 }

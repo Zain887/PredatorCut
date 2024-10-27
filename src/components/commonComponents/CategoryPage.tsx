@@ -9,12 +9,14 @@ interface Props {
     headerImages: HeaderImages[]; // Array of header images to display dynamically
     categories: Category[]; // Array of categories to display
     addToCart: (product: ProductType) => void; // Ensure you have the correct signature
+    isLoggedIn: boolean; // Prop to check if the user is logged in
 }
 
-const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, categories, addToCart }) => {
+const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, categories, addToCart, isLoggedIn }) => {
     const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<string | null>(null);
     const [popupVisible, setPopupVisible] = useState(false); // State for the popup
     const [popupMessage, setPopupMessage] = useState('');
+    const currentUser = { id: 'user123' }; // Replace with your actual user data
 
     // Find the matching header image for the selected category
     const matchedHeaderImage = headerImages.find(
@@ -29,7 +31,7 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, categor
     // Function to handle subcategory selection
     const handleSelectSubcategory = (subcategoryId: string) => {
         setSelectedSubcategoryId(subcategoryId);
-    }
+    };
 
     // Function to show popup notification
     const showPopup = (message: string) => {
@@ -46,9 +48,10 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, categor
     // Get all products from selected category if no subcategory is selected
     const allProducts = selectedCategory.subcategories.flatMap(subcat => subcat.products);
     const filteredProducts = selectedSubcategoryId
-        ? selectedCategory.subcategories
-            .find(subcat => subcat.id === selectedSubcategoryId)?.products || []
+        ? selectedCategory.subcategories.find(subcat => subcat.id === selectedSubcategoryId)?.products || []
         : allProducts; // Show all products if no subcategory is selected
+
+    // Filter hot-selling products
     const hotSellingProducts = filteredProducts.filter(product => product.tag && product.tag.includes('Featured'));
 
     return (
@@ -85,10 +88,17 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, categor
                                 tag={product.tag}
                                 quantity={product.quantity}
                                 addToCart={() => {
-                                    addToCart(product);
-                                    showPopup(`${product.name} quantity updated in cart!`); // Show popup message
+                                    if (isLoggedIn) {
+                                        addToCart(product); // Call addToCart only if the user is logged in
+                                        showPopup(`${product.name} quantity updated in cart!`); // Show popup message
+                                    } else {
+                                        showPopup('Please log in to add items to your cart.'); // Show message if not logged in
+                                    }
                                 }} // Pass addToCart to Product
+                                isLoggedIn={isLoggedIn} // Pass the isLoggedIn prop
+                                userId={currentUser.id}
                             />
+
                         ))}
                     </div>
                 </div>
@@ -118,10 +128,17 @@ const CategoryPage: React.FC<Props> = ({ selectedCategory, headerImages, categor
                                     tag={product.tag}
                                     quantity={product.quantity}
                                     addToCart={() => {
-                                        addToCart(product);
-                                        showPopup(`${product.name} quantity updated in cart!`); // Show popup message
+                                        if (isLoggedIn) {
+                                            addToCart(product); // Call addToCart only if the user is logged in
+                                            showPopup(`${product.name} quantity updated in cart!`); // Show popup message
+                                        } else {
+                                            showPopup('Please log in to add items to your cart.'); // Show message if not logged in
+                                        }
                                     }} // Pass addToCart to Product
+                                    isLoggedIn={isLoggedIn} // Pass the isLoggedIn 
+                                    userId={currentUser.id}
                                 />
+
                             ))
                         ) : (
                             <p className="col-span-full text-center">No products available for this type.</p>

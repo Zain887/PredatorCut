@@ -6,9 +6,10 @@ import ProductComment from '../admin/ProductComment'; // Import the ProductComme
 interface Props {
     products: Product[]; // Array of products passed as props to the component
     addToCart: (product: Product) => void; // Function to add product to cart
+    isLoggedIn: boolean; // Prop to determine if user is logged in
 }
 
-const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
+const ProductDetails: React.FC<Props> = ({ products, addToCart, isLoggedIn }) => {
     const { id } = useParams<{ id: string }>(); // Get the product ID from the URL
     const product = products.find((prod) => prod.id === id); // Find the product by ID
 
@@ -20,6 +21,15 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
 
     // Ensure price is a number
     const price = typeof product.price === 'string' ? parseFloat(product.price) : product.price;
+
+    const handleAddToCart = () => {
+        if (isLoggedIn) {
+            addToCart(product);
+        } else {
+            // Here you can handle showing a login/register prompt
+            alert('Please log in or register to add items to your cart.'); // Replace with a more user-friendly approach
+        }
+    };
 
     return (
         <div className='my-20 w-full bg-white p-5'>
@@ -88,7 +98,7 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart }) => {
 
                     {/* Add to Cart Button */}
                     <button
-                        onClick={() => addToCart(product)}
+                        onClick={handleAddToCart} // Call the handle function
                         disabled={product.quantity === 0}
                         className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:bg-gray-400 w-full"
                     >
