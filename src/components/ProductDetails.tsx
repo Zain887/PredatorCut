@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Product } from '../types'; // Ensure this path is correct
 import ProductComment from '../admin/ProductComment'; // Import the ProductComment component
 
@@ -10,6 +10,7 @@ interface Props {
 }
 
 const ProductDetails: React.FC<Props> = ({ products, addToCart, isLoggedIn }) => {
+    const navigate = useNavigate();
     const { id } = useParams<{ id: string }>(); // Get the product ID from the URL
     const product = products.find((prod) => prod.id === id); // Find the product by ID
 
@@ -26,13 +27,17 @@ const ProductDetails: React.FC<Props> = ({ products, addToCart, isLoggedIn }) =>
         if (isLoggedIn) {
             addToCart(product);
         } else {
-            // Here you can handle showing a login/register prompt
-            alert('Please log in or register to add items to your cart.'); // Replace with a more user-friendly approach
+            navigate('/login')
         }
     };
 
+    // Scroll to top on component mount
+    useEffect(() => {
+        window.scrollTo(0, 0); // Scroll to the top of the page
+    }, []);
+
     return (
-        <div className='my-20 w-full bg-white p-5'>
+        <div className='py-20 w-full bg-white p-5'>
             <h1 className='text-center py-10 bg-gradient-to-b from-[#666666] to-white text-transparent bg-clip-text font-bold uppercase text-3xl sm:text-4xl'>
                 Product Details
             </h1>

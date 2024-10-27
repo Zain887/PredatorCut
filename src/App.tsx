@@ -23,6 +23,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return !!localStorage.getItem('token'); // Check if token exists
   });
+  const [isAdmin, setIsAdmin] = useState(false); // New state for admin status
 
   const API_URL = import.meta.env.VITE_API_URL as string;
 
@@ -30,16 +31,16 @@ function App() {
   const fetchCartData = async () => {
     const token = localStorage.getItem('token');
     if (token) {
-        try {
-            const response = await axios.get(`${API_URL}/cart`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setCart(response.data.items || []); // Update cart state with fetched items
-        } catch (error) {
-            handleAxiosError(error, 'Error fetching cart data');
-        }
+      try {
+        const response = await axios.get(`${API_URL}/cart`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCart(response.data.items || []); // Update cart state with fetched items
+      } catch (error) {
+        handleAxiosError(error, 'Error fetching cart data');
+      }
     }
-};
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -93,12 +94,20 @@ function App() {
     }
   };
 
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (adminStatus: boolean) => {
     const token = localStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true); // Update login state
+      setIsAdmin(adminStatus); // Set admin status based on login
       fetchCartData(); // Fetch cart data on login success
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Clear the token
+    setIsLoggedIn(false); // Update login state
+    setIsAdmin(false); // Reset admin status
+    setCart([]); // Optionally clear the cart
   };
 
   const allProducts = categories.flatMap(category =>
@@ -130,6 +139,7 @@ function App() {
 
   const removeFromCart = async (productId: string) => {
     const token = localStorage.getItem('token');
+
     if (!productId) {
       console.error('Product ID is missing');
       return;
@@ -140,9 +150,10 @@ function App() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // Update the local cart state immediately
-      if (response.status === 200 && response.data.items) {
-        setCart(response.data.items); // Update cart state after removal
+      if (response.status === 200 && response.data?.items) {
+        setCart(response.data.items); // Update cart state after successful removal
+      } else {
+        console.error('Unexpected response format:', response);
       }
     } catch (error) {
       handleAxiosError(error, 'Error removing from cart');
@@ -174,7 +185,9 @@ function App() {
           <LoadingAnimation />
         ) : (
           <div className="fade-in">
-            <Menubar categories={categories} />
+            <Menubar categories={categories}
+              isLoggedIn={isLoggedIn}
+              onLogout={handleLogout} />
             <Routes>
               <Route path="/" element={<LandingPage headerImages={headerImage} />} />
               {categories.map((category) => (
@@ -201,7 +214,6 @@ function App() {
                     removeFromCart={removeFromCart}
                     updateQuantity={updateQuantity} // Pass updateQuantity to CartHolder
                     fetchCartData={fetchCartData} // Pass fetchCartData as a prop
-
                   />
                 }
               />
@@ -215,7 +227,7 @@ function App() {
                   />
                 }
               />
-              <Route path='/admin' element={<AdminPanel />} />
+              <Route path='/admin' element={isAdmin ? <AdminPanel /> : <Navigate to="/" />} />
               <Route
                 path="/login"
                 element={isLoggedIn ? <Navigate to="/" /> : <Login onLoginSuccess={handleLoginSuccess} />}

@@ -16,7 +16,7 @@ const CartHolder: React.FC<Props> = ({ cart, removeFromCart, updateQuantity, fet
     }, []); // Removed fetchCartData from the dependency array
 
     return (
-        <div className="my-20 mt-[72px] w-auto mx-auto p-5 bg-white shadow-lg rounded-lg">
+        <div className="py-20 mt-[72px] w-auto mx-auto p-5 bg-white shadow-lg rounded-lg">
             <h1 className="text-3xl font-bold text-center mb-6 text-black">Your Cart</h1>
             {cart.length === 0 ? (
                 <p className="text-center text-gray-600">Your cart is empty.</p>

@@ -60,3 +60,11 @@ export interface Cart {
   totalQuantity: number; // Total number of items in the cart
   totalPrice: number; // Total price of all items in the cart
 }
+
+export interface User {
+  id: string;
+  email: string;
+  password: string; // Ensure you handle this securely!
+  isActive: boolean;
+  isAdmin: boolean; // Add isAdmin property here
+}

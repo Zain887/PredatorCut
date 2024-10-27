@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -8,7 +9,7 @@ const Register: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const API_URL = import.meta.env.VITE_API_URL as string; // Make sure the API URL is properly defined
-
+  const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +24,10 @@ const Register: React.FC = () => {
       setSuccess('Registration successful! You can now log in.');
       setError(null);
 
-      // Optionally, you can redirect the user to the login page after successful registration
+      // Redirect to the login page after a short delay
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000); // Redirects after 2 seconds
     } catch (err) {
       setError('Failed to register. Email may already be in use.');
       setSuccess(null);
@@ -31,12 +35,16 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-200">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+        <h2 className="text-3xl font-semibold mb-6 text-center text-black">Register</h2>
 
         {error && <div className="bg-red-100 text-red-700 p-2 mb-4 rounded">{error}</div>}
-        {success && <div className="bg-green-100 text-green-700 p-2 mb-4 rounded">{success}</div>}
+        {success && (
+          <div className="bg-green-100 text-green-700 p-2 mb-4 rounded">
+            {success}
+          </div>
+        )}
 
         <form onSubmit={handleRegister}>
           <div className="mb-4">
@@ -46,7 +54,7 @@ const Register: React.FC = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Enter your username"
             />
           </div>
@@ -58,7 +66,7 @@ const Register: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Enter your email"
             />
           </div>
@@ -70,18 +78,28 @@ const Register: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Enter your password"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 rounded-md"
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-md transition duration-200"
           >
             Register
           </button>
         </form>
+
+        <div className="mt-4 text-center">
+          <p className="text-gray-600">Already have an account?</p>
+          <button
+            onClick={() => navigate('/login')}
+            className="text-green-600 underline hover:text-green-800 focus:outline-none w-full mt-5"
+          >
+            Login here
+          </button>
+        </div>
       </div>
     </div>
   );

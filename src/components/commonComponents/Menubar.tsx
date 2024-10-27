@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { BiLogoTiktok } from "react-icons/bi";
-import { FaFacebook, FaBars } from "react-icons/fa6"; // Icons for mobile menu toggle
+import { FaFacebook, FaBars } from "react-icons/fa6";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { AiFillInstagram } from "react-icons/ai";
-import { FaHome, FaTimes, FaShoppingCart } from "react-icons/fa"; // Importing the shopping cart icon
-import { Category } from '../../types'; // Import the Category interface
+import { FaHome, FaTimes, FaShoppingCart } from "react-icons/fa";
+import { Category } from '../../types';
+import { RiAdminFill, RiLoginBoxFill, RiLogoutBoxFill } from 'react-icons/ri';
 
 interface Props {
-    categories: Category[]; // Pass the categories as props
+    categories: Category[];
+    isLoggedIn: boolean; // Add isLoggedIn prop
+    onLogout: () => void; // Add onLogout function prop
 }
 
-const Menubar: React.FC<Props> = ({ categories }) => {
+const Menubar: React.FC<Props> = ({ categories, isLoggedIn, onLogout }) => {
     const [activeIndex, setActiveIndex] = useState<number | null>(-1);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to control the dropdown
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State to control the mobile menu
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    // Split categories: First 4 for direct menu items, rest for the dropdown
     const visibleCategories = categories.slice(0, 4);
     const dropdownCategories = categories.slice(4);
 
@@ -81,6 +83,21 @@ const Menubar: React.FC<Props> = ({ categories }) => {
                 >
                     <FaShoppingCart size={20} />
                 </NavLink>
+
+                {/* Login/Logout Button */}
+                {isLoggedIn ? (
+                    <RiLogoutBoxFill size={20} 
+                    onClick={onLogout}
+                        className="text-gray-300 hover:text-white transition-colors flex items-center cursor-pointer" />
+                ) : (
+                    <NavLink
+                        to="/login"
+                        className="text-gray-300 hover:text-white transition-colors flex items-center cursor-pointer"
+                    >
+                        <RiLoginBoxFill size={20} />
+                    </NavLink>
+                )}
+                <NavLink to="/admin"><RiAdminFill color='blue' size={20} /></NavLink>
             </div>
 
             {/* Mobile Menu Button */}
@@ -91,7 +108,7 @@ const Menubar: React.FC<Props> = ({ categories }) => {
                     onClick={() => setIsMobileMenuOpen(false)}
                 >
                     <button className='bg-transparent'>
-                        <FaShoppingCart size={20} color='white'/>
+                        <FaShoppingCart size={20} color='white' />
                     </button>
                 </NavLink>
 
@@ -148,8 +165,27 @@ const Menubar: React.FC<Props> = ({ categories }) => {
                         <FaShoppingCart size={20} />
                     </NavLink>
 
+                    {/* Login/Logout Button for Mobile */}
+                    {isLoggedIn ? (
+                        <button
+                            onClick={onLogout}
+                            className="text-gray-300 hover:text-white transition-colors flex items-center"
+                        >
+                            <RiLogoutBoxFill size={20} />
+                        </button>
+                    ) : (
+                        <NavLink
+                            to="/login"
+                            className="text-gray-300 hover:text-white transition-colors flex items-center"
+                        >
+                            <RiLoginBoxFill size={20} />
+                        </NavLink>
+                    )}
+                    <NavLink to="/admin"><RiAdminFill color='blue' size={20} /></NavLink>
+
+
                     {/* Social Icons - Positioned at the bottom */}
-                    <div className="absolute bottom-4 left-0 w-full flex justify-center space-x-4">
+                    <div className="w-full flex justify-center space-x-4">
                         <a href="/">
                             <BiLogoTiktok color='white' className='hover:scale-110 transition-transform' size={20} />
                         </a>

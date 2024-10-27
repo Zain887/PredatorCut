@@ -1,6 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import { HeaderImages, Category } from './types'; // Your custom types
 
+
+// data.ts
+export const adminCredentials = {
+    email: 'admin@admin.com',
+    password: 'admin', // Replace with your actual admin password
+  };
+
 // Header images data
 export const headerImages: HeaderImages[] = [
     { id: uuidv4(), url: '/headerImages/sword-1.jpg', article: 'Swords' },
