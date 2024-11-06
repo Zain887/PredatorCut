@@ -16,6 +16,11 @@ const AdminPanel: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [activeComponent, setActiveComponent] = useState<'headerImage' | 'category' | 'productType' | 'product'>('headerImage');
     const [activeSubComponent, SetActiveSubComponent] = useState<'new' | 'list'>('new');
+    const [editingHeaderImage, setEditingHeaderImage] = useState<any | null>(null); // State for the header image being edited
+    const [editingCategory, setEditingCategory] = useState<Category | undefined>(undefined); // Use undefined instead of null
+    const [editingSubcategory, setEditingSubcategory] = useState<Subcategory | undefined>(undefined);
+
+
 
     const API_URL = import.meta.env.VITE_API_URL as string;
 
@@ -114,6 +119,63 @@ const AdminPanel: React.FC = () => {
         return <div>Loading...</div>;
     }
 
+    const handleUpdate = async (id: string, formData: FormData) => {
+        try {
+            const response = await axios.patch(`${API_URL}/header-images/${id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (response.status === 200) {
+                console.log('Update received:', response.data);
+
+                setHeaderImage((prev) =>
+                    prev.map((image) =>
+                        image.id === id
+                            ? { ...image, article: response.data.article, imageUrl: response.data.imageUrl }
+                            : image
+                    )
+                );
+                setEditingHeaderImage(null);
+            } else {
+                console.error('Error updating header image');
+            }
+        } catch (error) {
+            console.error('Error updating header image:', error);
+        }
+    };
+
+
+
+    const handleEdit = (image: any) => {
+        setEditingHeaderImage(image);
+        SetActiveSubComponent('new'); // Switch to the form component
+    };
+
+    // Handle selecting a category to edit
+    const handleEditCat = (category: Category) => {
+        setEditingCategory(category);
+        SetActiveSubComponent('new');
+    };
+
+    // Handle updating a category
+    const handleUpdateCat = (updatedCategory: Category) => {
+        setCategories((prevCategories) =>
+            prevCategories.map((cat) => (cat.id === updatedCategory.id ? updatedCategory : cat))
+        );
+        setEditingCategory(undefined); // Clear editing state after update
+    };
+
+    const handleEditSubcategory = (subcategory: Subcategory) => {
+        setEditingSubcategory(subcategory);
+        SetActiveSubComponent('new');
+    };
+
+    const handleUpdateSubcategory = (updatedSubcategory: Subcategory) => {
+        setProductType(prevSubcategories => prevSubcategories.map(sub => (sub.id === updatedSubcategory.id ? updatedSubcategory : sub)));
+        setEditingSubcategory(undefined);
+    };
     return (
         <>
             <h1 className="text-white font-extrabold text-4xl text-center md:w-full mt-16">Admin Panel</h1>
@@ -165,7 +227,10 @@ const AdminPanel: React.FC = () => {
                             <div className="flex flex-col md:flex-row items-center justify-evenly mt-5">
                                 {activeSubComponent === "new" && (
                                     <div className="w-full">
-                                        <HeaderImageForm />
+                                        <HeaderImageForm
+                                            existingHeaderImage={editingHeaderImage} // Pass existing header image data if available
+                                            onUpdate={handleUpdate} // Your function to handle update logic
+                                        />
                                     </div>
                                 )}
                                 {activeSubComponent === 'list' && (
@@ -194,7 +259,7 @@ const AdminPanel: React.FC = () => {
                                                             <MdDelete size={30} color='red' onClick={() => deleteHeaderImage(image.id)} />
                                                         </td>
                                                         <td className="border-b px-4 py-2">
-                                                            <MdModeEdit size={30} color='green' onClick={() => { }} />
+                                                            <MdModeEdit size={30} color='green' onClick={() => handleEdit(image)} />
                                                         </td>
                                                     </tr>
                                                 ))}
@@ -215,7 +280,11 @@ const AdminPanel: React.FC = () => {
                                 {activeSubComponent === "new" && (
 
                                     <div className="w-full mb-5 md:mb-0">
-                                        <CategoryForm />
+                                        <CategoryForm
+                                            existingCategory={editingCategory}
+                                            onCategoryCreated={(newCategory) => setCategories([...categories, ...newCategory])}
+                                            onUpdate={handleUpdateCat}
+                                        />
                                     </div>
                                 )}
                                 {activeSubComponent === "list" && (
@@ -237,7 +306,7 @@ const AdminPanel: React.FC = () => {
                                                             <MdDelete size={30} color='red' onClick={() => deleteCategory(data.id)} />
                                                         </td>
                                                         <td className="border-b px-4 py-2">
-                                                            <MdModeEdit size={30} color='green' onClick={() => { }} />
+                                                            <MdModeEdit size={30} color='green' onClick={() => handleEditCat(data)} />
                                                         </td>
                                                     </tr>
                                                 ))}
@@ -256,7 +325,10 @@ const AdminPanel: React.FC = () => {
                             </div>
                             <div className="flex flex-col md:flex-row items-start md:items-center justify-evenly">
                                 {activeSubComponent === "new" && (
-                                    <ProductTypeForm />
+                                    <ProductTypeForm
+                                    existingSubcategory={editingSubcategory}
+                                    onProductTypeCreated={handleUpdateSubcategory}
+                                />
                                 )}
                                 {activeSubComponent === "list" && (
                                     <div className="w-full mt-4 md:mt-0">
@@ -277,7 +349,7 @@ const AdminPanel: React.FC = () => {
                                                                 <MdDelete size={30} color='red' onClick={() => deleteProductType(data.id)} />
                                                             </td>
                                                             <td className="border-b px-4 py-2">
-                                                                <MdModeEdit size={30} color='green' onClick={() => { }} />
+                                                                <MdModeEdit size={30} color='green' onClick={() => handleEditSubcategory(data)} />
                                                             </td>
                                                         </tr>
                                                     ))}

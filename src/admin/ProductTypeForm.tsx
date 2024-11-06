@@ -3,21 +3,20 @@ import axios from 'axios'; // Import axios for making API requests
 import { Subcategory } from '../types'; // Import Subcategory interface
 
 interface Props {
-    onProductTypeCreated?: (subcategory: Subcategory[]) => void; // Callback to parent if needed
+    onProductTypeCreated?: (subcategory: Subcategory) => void; // Callback to parent if needed
+    existingSubcategory?: Subcategory; // New prop to handle editing an existing subcategory
 }
 
-const ProductTypeForm: React.FC<Props> = ({ onProductTypeCreated }) => {
+const ProductTypeForm: React.FC<Props> = ({ onProductTypeCreated, existingSubcategory }) => {
     // State for product type form fields
     const [message, setMessage] = useState<string | null>(null);
-    const [name, setName] = useState<string>('');
-    const [categoryId, setCategoryId] = useState<string>(''); // Category ID
+    const [name, setName] = useState<string>(existingSubcategory?.name || ''); // Initialize with existing name if editing
+    const [categoryId, setCategoryId] = useState<string>(existingSubcategory?.categoryId || ''); // Initialize with existing categoryId
     const [categories, setCategories] = useState<any[]>([]); // To hold available categories
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
     const API_URL = import.meta.env.VITE_API_URL as string; // Add type assertion
-    console.log(import.meta.env, 'error defined');
-
 
     // Fetch categories from the backend
     useEffect(() => {
@@ -41,23 +40,32 @@ const ProductTypeForm: React.FC<Props> = ({ onProductTypeCreated }) => {
         setError(null); // Reset error before making a request
 
         try {
-            // Make an API call to create the product type in the backend
-            const response = await axios.post(`${API_URL}/subcategory`, {
-                name,
-                categoryId, // Pass the categoryId
-            });
-
-            // Handle the response and pass the created product type back to the parent if needed
-            if (response.data) {
+            if (existingSubcategory) {
+                // If editing an existing subcategory, make a PUT request
+                const response = await axios.patch(`${API_URL}/subcategory/${existingSubcategory.id}`, {
+                    name,
+                    categoryId, // Pass the categoryId
+                });
+                setMessage('Product type updated successfully!');
                 if (onProductTypeCreated) {
-                    onProductTypeCreated(response.data); // Pass the newly created product type to the parent
+                    onProductTypeCreated(response.data); // Pass the updated product type to the parent
                 }
-                setMessage('Product type created successfully!');
+            } else {
+                // Make an API call to create a new product type
+                const response = await axios.post(`${API_URL}/subcategory`, {
+                    name,
+                    categoryId, // Pass the categoryId
+                });
+                if (response.data) {
+                    if (onProductTypeCreated) {
+                        onProductTypeCreated(response.data); // Pass the newly created product type to the parent
+                    }
+                    setMessage('Product type created successfully!');
+                }
             }
         } catch (err) {
-            setError('Failed to create product type. Please try again later.');
-            setMessage('Error creating product type');
-            console.error('Error creating product type:', err);
+            setError('Failed to create/update product type. Please try again later.');
+            console.error('Error creating/updating product type:', err);
         } finally {
             setLoading(false);
         }
@@ -65,7 +73,9 @@ const ProductTypeForm: React.FC<Props> = ({ onProductTypeCreated }) => {
 
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
-            <h1 className="text-3xl font-bold text-center mb-6 text-gray-900">Create New Product Type</h1>
+            <h1 className="text-3xl font-bold text-center mb-6 text-gray-900">
+                {existingSubcategory ? 'Edit Product Type' : 'Create New Product Type'}
+            </h1>
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Product Type Name Input */}
@@ -111,10 +121,9 @@ const ProductTypeForm: React.FC<Props> = ({ onProductTypeCreated }) => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className={`px-6 py-3 text-white rounded-md focus:outline-none ${loading ? 'bg-gray-500' : 'bg-blue-500 hover:bg-blue-600'
-                            }`}
+                        className={`px-6 py-3 text-white rounded-md focus:outline-none ${loading ? 'bg-gray-500' : 'bg-blue-500 hover:bg-blue-600'}`}
                     >
-                        {loading ? 'Creating...' : 'Create Product Type'}
+                        {loading ? 'Creating...' : existingSubcategory ? 'Update Product Type' : 'Create Product Type'}
                     </button>
                 </div>
             </form>

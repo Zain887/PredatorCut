@@ -20,14 +20,14 @@ export interface Subcategory {
 export interface Product {
   id: string;
   name: string;
-  shortDescription?: string;
   price: number;
-  imageUrl: string[];
-  productDetails?: ProductDetails;
-  quantity: number; // Assuming this is for inventory tracking
-  tag?: string[];
-  subcategoryId?: string;
-  comments?: ProductComment[];
+  quantity: number;
+  imageUrl?: string[]; // Optional
+  shortDescription?: string; // Optional
+  productDetails?: ProductDetails; // Optional
+  categoryId?: string; // Optional
+  subcategoryId?: string; // Optional
+  tag?: string[]; // Optional
 }
 
 export interface ProductDetails {

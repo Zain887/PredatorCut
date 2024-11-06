@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 interface HeaderImage {
@@ -6,19 +6,32 @@ interface HeaderImage {
     file: File | null;
 }
 
-const HeaderImageForm: React.FC = () => {
+interface HeaderImageFormProps {
+    existingHeaderImage?: { id: string; article: string; imageUrl: string };
+    onUpdate?: (id: string, formData: FormData) => Promise<void>;
+}
+
+const HeaderImageForm: React.FC<HeaderImageFormProps> = ({ existingHeaderImage, onUpdate }) => {
     const [formData, setFormData] = useState<HeaderImage>({
-        article: '',
+        article: existingHeaderImage?.article || '',
         file: null,
     });
 
-    const API_URL = import.meta.env.VITE_API_URL as string; // Add type assertion
-    console.log(import.meta.env, 'error defined');
-
     const [message, setMessage] = useState<string | null>(null);
-    const [imagePreview, setImagePreview] = useState<string | null>(null); // State for image preview
+    const [imagePreview, setImagePreview] = useState<string | null>(existingHeaderImage?.imageUrl || null);
 
-    // Handle text input (article)
+    const API_URL = import.meta.env.VITE_API_URL as string;
+
+    useEffect(() => {
+        if (existingHeaderImage) {
+            setFormData({
+                article: existingHeaderImage.article,
+                file: null,
+            });
+            setImagePreview(existingHeaderImage.imageUrl);
+        }
+    }, [existingHeaderImage]);
+
     const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
             ...formData,
@@ -26,7 +39,6 @@ const HeaderImageForm: React.FC = () => {
         });
     };
 
-    // Handle file input (image)
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files ? e.target.files[0] : null;
         setFormData({
@@ -34,7 +46,6 @@ const HeaderImageForm: React.FC = () => {
             file: file,
         });
 
-        // Set image preview
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -42,41 +53,54 @@ const HeaderImageForm: React.FC = () => {
             };
             reader.readAsDataURL(file);
         } else {
-            setImagePreview(null); // Clear preview if no file is selected
+            setImagePreview(existingHeaderImage?.imageUrl || null);
         }
     };
 
-    // Handle form submission
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
         const formDataToSend = new FormData();
         formDataToSend.append('article', formData.article);
+
         if (formData.file) {
-            formDataToSend.append('file', formData.file); // Append the file to the form data
+            formDataToSend.append('file', formData.file);
         }
 
         try {
-            const response = await axios.post(`${API_URL}/header-images`, formDataToSend, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            if (response.status === 201) { // Check if created successfully
-                setMessage('Header image created successfully!');
-                setFormData({ article: '', file: null });
-                setImagePreview(null); // Clear preview on success
+            if (existingHeaderImage && onUpdate) {
+                await onUpdate(existingHeaderImage.id, formDataToSend);
+                setMessage('Header image updated successfully!');
             } else {
-                setMessage('Error creating header image');
+                const response = await axios.post(`${API_URL}/header-images`, formDataToSend, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                if (response.status === 201) {
+                    setMessage('Header image created successfully!');
+                } else {
+                    setMessage('Error creating header image');
+                }
             }
+
+            setFormData({ article: '', file: null });
+            setImagePreview(null);
         } catch (error) {
-            setMessage('Network error, please try again later');
+            if (axios.isAxiosError(error)) {
+                setMessage(`Network error: ${error.response?.data?.message || error.message}`);
+            } else {
+                setMessage('Network error, please try again later');
+            }
         }
     };
 
     return (
         <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg mt-16 md:mt-[72px]">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Create Header Image</h2>
+            <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
+                {existingHeaderImage ? 'Update Header Image' : 'Create Header Image'}
+            </h2>
             <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <div className="mb-4">
                     <label className="block text-gray-700 font-semibold mb-2">Article:</label>
@@ -86,7 +110,7 @@ const HeaderImageForm: React.FC = () => {
                         value={formData.article}
                         onChange={handleTextChange}
                         required
-                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-4 py-2 text-black bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                 </div>
                 <div className="mb-4">
@@ -96,12 +120,10 @@ const HeaderImageForm: React.FC = () => {
                         name="file"
                         accept="image/*"
                         onChange={handleFileChange}
-                        required
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                 </div>
 
-                {/* Image Preview */}
                 {imagePreview && (
                     <div className="mb-4">
                         <label className="block text-gray-700 font-semibold mb-2">Image Preview:</label>
@@ -113,7 +135,7 @@ const HeaderImageForm: React.FC = () => {
                     type="submit"
                     className="w-full bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600 transition duration-300"
                 >
-                    Submit
+                    {existingHeaderImage ? 'Update' : 'Submit'}
                 </button>
             </form>
             {message && (

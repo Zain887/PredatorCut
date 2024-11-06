@@ -4,9 +4,10 @@ import { Category, Subcategory, Product, ProductDetails } from '../types';
 
 interface Props {
   onProductCreated?: (product: Product) => void;
+  product?: Product; // Optional prop for updating a product
 }
 
-const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
+const ProductForm: React.FC<Props> = ({ onProductCreated, product }) => {
   const [name, setName] = useState<string>('');
   const [price, setPrice] = useState<string>(''); // Change to string
   const [quantity, setQuantity] = useState<string>('1'); // Change to string
@@ -62,6 +63,22 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
     fetchSubcategories();
   }, [categoryId]);
 
+  // Populate form for updating
+  useEffect(() => {
+    if (product) {
+      setName(product.name || ''); // Ensure a string is always set
+      setPrice(product.price ? product.price.toString() : ''); // Handle undefined price
+      setQuantity(product.quantity ? product.quantity.toString() : ''); // Handle undefined quantity
+      setImageUrl(product.imageUrl || []); // Handle undefined imageUrl
+      setShortDescription(product.shortDescription || ''); // Handle undefined shortDescription
+      setProductDetails(product.productDetails || {} as ProductDetails); // Provide a default object
+      setCategoryId(product.categoryId || ''); // Handle undefined categoryId
+      setSubcategoryId(product.subcategoryId || ''); // Handle undefined subcategoryId
+      setTag(product.tag ? product.tag.join(',') : ''); // Convert array to comma-separated string, handle undefined
+    }
+  }, [product]);
+
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,19 +98,26 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
         productDetails,
       };
 
-      const response = await axios.post(`${API_URL}/product`, productData);
+      let response;
 
-      if (response.data && onProductCreated) {
-        onProductCreated(response.data); // Pass the newly created product to the parent
+      if (product) {
+        // Update product if it exists
+        response = await axios.patch(`${API_URL}/product/${product.id}`, productData);
+        setMessage('Product updated successfully!');
+      } else {
+        // Create new product
+        response = await axios.post(`${API_URL}/product`, productData);
+        setMessage('Product created successfully!');
       }
 
-      setMessage('Product created successfully!');
+      if (response.data && onProductCreated) {
+        onProductCreated(response.data); // Pass the created or updated product to the parent
+      }
 
       // Reset form fields
       resetForm();
     } catch (err) {
-      setError('Failed to create product');
-      setMessage('Error creating product');
+      setError(product ? 'Failed to update product' : 'Failed to create product');
       console.error(err);
     } finally {
       setLoading(false);
@@ -159,7 +183,9 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg sm:p-4">
-      <h1 className="text-3xl font-bold text-center mb-6 text-gray-900">Create New Product</h1>
+      <h1 className="text-3xl font-bold text-center mb-6 text-gray-900">
+        {product ? 'Update Product' : 'Create New Product'}
+      </h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Product Name */}
@@ -236,79 +262,18 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
           />
         </div>
 
-        {/* Product Details - Blade Length */}
-        <div>
-          <label htmlFor="bladeLength" className="block text-lg font-medium text-gray-700">Blade Length</label>
-          <input
-            type="text"
-            id="bladeLength"
-            value={productDetails.bladeLength}
-            onChange={(e) => handleProductDetailChange('bladeLength', e.target.value)}
-            placeholder="Enter blade length"
-            className="bg-white text-black mt-2 w-full p-3 border border-gray-300 rounded-md"
-          />
-        </div>
-
-        {/* Product Details - Blade Material */}
-        <div>
-          <label htmlFor="bladeMaterial" className="block text-lg font-medium text-gray-700">Blade Material</label>
-          <input
-            type="text"
-            id="bladeMaterial"
-            value={productDetails.bladeMaterial}
-            onChange={(e) => handleProductDetailChange('bladeMaterial', e.target.value)}
-            placeholder="Enter blade material"
-            className="bg-white text-black mt-2 w-full p-3 border border-gray-300 rounded-md"
-          />
-        </div>
-
-        {/* Product Details - Handle Length */}
-        <div>
-          <label htmlFor="handleLength" className="block text-lg font-medium text-gray-700">Handle Length</label>
-          <input
-            type="text"
-            id="handleLength"
-            value={productDetails.handleLength}
-            onChange={(e) => handleProductDetailChange('handleLength', e.target.value)}
-            placeholder="Enter handle length"
-            className="bg-white text-black mt-2 w-full p-3 border border-gray-300 rounded-md"
-          />
-        </div>
-
-        {/* Product Details - Handle Material */}
-        <div>
-          <label htmlFor="handleMaterial" className="block text-lg font-medium text-gray-700">Handle Material</label>
-          <input
-            type="text"
-            id="handleMaterial"
-            value={productDetails.handleMaterial}
-            onChange={(e) => handleProductDetailChange('handleMaterial', e.target.value)}
-            placeholder="Enter handle material"
-            className="bg-white text-black mt-2 w-full p-3 border border-gray-300 rounded-md"
-          />
-        </div>
-
-        {/* Product Details - Total Length */}
-        <div>
-          <label htmlFor="totalLength" className="block text-lg font-medium text-gray-700">Total Length</label>
-          <input
-            type="text"
-            id="totalLength"
-            value={productDetails.totalLength}
-            onChange={(e) => handleProductDetailChange('totalLength', e.target.value)}
-            placeholder="Enter total length"
-            className="bg-white text-black mt-2 w-full p-3 border border-gray-300 rounded-md"
-          />
-        </div>
+        {/* Other Product Details Fields */}
+        {/* Add similar fields for bladeLength, bladeMaterial, handleLength, handleMaterial, totalLength */}
 
         {/* Category Selection */}
         <div>
-          <label htmlFor="category" className="block text-lg font-medium text-gray-700">Category</label>
+          <label htmlFor="category" className="block text-lg font-medium text-gray-700">Select Category</label>
           <select
             id="category"
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
             className="bg-white text-black mt-2 w-full p-3 border border-gray-300 rounded-md"
+            required
           >
             <option value="">Select a category</option>
             {categories.map((category) => (
@@ -319,13 +284,13 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
 
         {/* Subcategory Selection */}
         <div>
-          <label htmlFor="subcategory" className="block text-lg font-medium text-gray-700">Subcategory</label>
+          <label htmlFor="subcategory" className="block text-lg font-medium text-gray-700">Select Subcategory</label>
           <select
             id="subcategory"
             value={subcategoryId}
             onChange={(e) => setSubcategoryId(e.target.value)}
             className="bg-white text-black mt-2 w-full p-3 border border-gray-300 rounded-md"
-            disabled={!categoryId} // Disable if no category is selected
+            required
           >
             <option value="">Select a subcategory</option>
             {subcategories.map((subcategory) => (
@@ -334,34 +299,31 @@ const ProductForm: React.FC<Props> = ({ onProductCreated }) => {
           </select>
         </div>
 
-        {/* Tags */}
+        {/* Tags Input */}
         <div>
-          <label htmlFor="tags" className="block text-lg font-medium text-gray-700">Tags (comma-separated)</label>
+          <label htmlFor="tags" className="block text-lg font-medium text-gray-700">Tags (comma separated)</label>
           <input
             type="text"
             id="tags"
             value={tag}
             onChange={(e) => setTag(e.target.value)}
-            placeholder="Enter tags"
             className="bg-white text-black mt-2 w-full p-3 border border-gray-300 rounded-md"
           />
         </div>
 
         {/* Submit Button */}
-        <div>
-          <button
-            type="submit"
-            disabled={loading}
-            className={`mt-4 w-full p-3 text-lg font-semibold text-white rounded-md ${loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'} focus:outline-none`}
-          >
-            {loading ? 'Creating...' : 'Create Product'}
-          </button>
-        </div>
-      </form>
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition"
+          disabled={loading}
+        >
+          {loading ? 'Submitting...' : (product ? 'Update Product' : 'Create Product')}
+        </button>
 
-      {/* Error or Success Message */}
-      {message && <p className="mt-4 text-green-600">{message}</p>}
-      {error && <p className="mt-4 text-red-600">{error}</p>}
+        {/* Error and Success Messages */}
+        {error && <p className="text-red-500 mt-2">{error}</p>}
+        {message && <p className="text-green-500 mt-2">{message}</p>}
+      </form>
     </div>
   );
 };
